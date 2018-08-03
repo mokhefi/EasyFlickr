@@ -28,8 +28,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // android support
-    implementation "com.android.support:appcompat-v7:$support_version"
+//    implementation "com.android.support:appcompat-v7:$support_version"
 //    implementation "com.android.support:design:$support_version"
+
+    // androidx
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
 
     // network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
