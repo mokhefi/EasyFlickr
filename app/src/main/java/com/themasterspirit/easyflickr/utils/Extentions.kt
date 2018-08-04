@@ -1,11 +1,16 @@
 package com.themasterspirit.easyflickr.utils
 
 import android.app.Application
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.themasterspirit.easyflickr.ui.FlickrApplication
 import org.kodein.di.Kodein
+
+
+val Context.application: Application
+    get() = this.applicationContext as Application
 
 val Application.kodein: Kodein
     get() = (this as FlickrApplication).kodein

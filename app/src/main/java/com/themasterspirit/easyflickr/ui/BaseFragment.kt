@@ -5,15 +5,19 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.utils.FlickrLogger
+import com.themasterspirit.easyflickr.utils.application
+import com.themasterspirit.easyflickr.utils.kodein
+import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 abstract class BaseFragment : Fragment(), KodeinAware {
 
 //    override val kodeinContext = kcontext(activity)
 
-    override val kodein by closestKodein()
+    override val kodein: Kodein = Kodein.lazy {
+        extend(context!!.application.kodein)
+    }
 
     protected val logger: FlickrLogger by instance()
 

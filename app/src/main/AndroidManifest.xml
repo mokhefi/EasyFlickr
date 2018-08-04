@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.themasterspirit.easyflickr">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".ui.FlickrApplication"
         android:allowBackup="false"

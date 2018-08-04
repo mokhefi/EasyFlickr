@@ -9,28 +9,28 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseFragment
-import com.themasterspirit.easyflickr.ui.FlickrApplication
 import com.themasterspirit.easyflickr.utils.Failure
 import com.themasterspirit.easyflickr.utils.Loading
 import com.themasterspirit.easyflickr.utils.Success
 import kotlinx.android.synthetic.main.fragment_recent.*
 import org.kodein.di.Kodein
+import org.kodein.di.KodeinContext
+import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import org.kodein.di.generic.kcontext
 
 class RecentPhotosFragment : BaseFragment() {
 
-//    override val kodeinContext = kcontext(activity)
+    override val kodeinContext: KodeinContext<*> = kcontext(context)
 
-    override val kodein: Kodein by lazy {
-        (activity!!.application as FlickrApplication).kodein
-    }
+    override val kodein: Kodein by closestKodein()
 
-    private val viewModel: RecentPhotosViewModel by instance()
-//        kodein.newInstance { RecentPhotosViewModel(application = instance(), repository = instance()) }
-//    }
+    private val presenter: RecentPhotosPresenter by instance()
+
 
     private val adapter by lazy { PhotoAdapter() }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(context, 2) }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recent, container, false)
@@ -49,14 +49,14 @@ class RecentPhotosFragment : BaseFragment() {
 
     private fun initViews() {
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshPhotos()
+            presenter.refreshPhotos()
         }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
 
     private fun initObservers() {
-        viewModel.recentPhotos.observe(this, Observer { data ->
+        presenter.recentPhotos.observe(this, Observer { data ->
             when (data) {
                 is Loading -> progress(data.loading)
                 is Success -> {
