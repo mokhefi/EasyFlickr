@@ -15,7 +15,7 @@ object RetrofitFactory {
 
     const val TAG = "RetrofitFactory"
 
-    const val endpoint = "https://api.flickr.com/services/rest/"
+    const val endpoint = "https://api.flickr.com/"
     const val RETROFIT_TIMEOUT: Int = 30
 
     inline fun <reified T> createService(

@@ -8,6 +8,7 @@ import com.themasterspirit.easyflickr.BuildConfig
 import com.themasterspirit.easyflickr.ui.home.recent.RecentPhotosPresenter
 import com.themasterspirit.easyflickr.utils.FlickrLogger
 import com.themasterspirit.flickr.data.api.repositories.FlickrRepository
+import com.themasterspirit.flickr.data.api.retrofit.FlickrInterceptor
 import com.themasterspirit.flickr.data.api.retrofit.FlickrService
 import com.themasterspirit.flickr.data.api.retrofit.RetrofitFactory
 import org.kodein.di.Kodein
@@ -36,7 +37,8 @@ class FlickrApplication : Application(), KodeinAware {
             RetrofitFactory.createService<FlickrService>(
                     gson = instance(),
                     context = instance(),
-                    debug = BuildConfig.DEBUG
+                    debug = BuildConfig.DEBUG,
+                    interceptors = *arrayOf(FlickrInterceptor(application))
             )
         }
 

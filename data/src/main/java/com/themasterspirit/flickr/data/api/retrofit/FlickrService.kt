@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface FlickrService {
 
-    @GET("/?method=flickr.photos.getRecent")
+    @GET("/services/rest/?method=flickr.photos.getRecent")
     fun getRecent(
             @Query("per_page") perPage: Long? = 100,
             @Query("user_id") userId: String? = null
