@@ -30,9 +30,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'androidx.core:core:1.0.0-beta01' // (*)
 
-    // other
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-
     // ktx
     implementation 'androidx.core:core-ktx:1.0.0-beta01'
     implementation 'androidx.collection:collection-ktx:1.0.0-beta01'
@@ -41,8 +38,31 @@ dependencies {
 //    implementation "android.arch.navigation: navigation-ui: 1.0.0-alpha01"
 //    implementation "android.arch.navigation: navigation-fragment-ktx: 1.0.0-alpha01 "
 
+    // kodein (di)
+    implementation 'org.kodein.di:kodein-di-generic-jvm:5.2.0'
+    implementation 'org.kodein.di:kodein-di-framework-android-core:5.2.0'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:5.2.0'
+
+    // rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+
+    // pictures
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+
+    // other
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
     // data
-//    implementation project(':data')
+    implementation project(':data')
+
+    // ViewModel and LiveData
+//    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
+//    implementation("android.arch.lifecycle:extensions:$lifecycle_version") {
+//        exclude group: 'com.android.support'
+//    }
 
     // support
 //    implementation "com.android.support:appcompat-v7:$support_version"
@@ -55,10 +75,6 @@ dependencies {
 //    implementation "com.android.support:support-compat:$support_version"
 //    implementation "com.android.support:support-core-ui:$support_version"
 //    implementation "com.android.support:support-fragment:$support_version"
-
-    // ViewModel and LiveData
-//    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-//    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
 
     // optional - ReactiveStreams support for LiveData
 //    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"

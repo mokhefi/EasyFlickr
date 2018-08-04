@@ -5,6 +5,7 @@
     package="com.themasterspirit.easyflickr">
 
     <application
+        android:name=".ui.FlickrApplication"
         android:allowBackup="false"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:fullBackupContent="false"
