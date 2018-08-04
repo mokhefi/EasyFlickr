@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.themasterspirit.easyflickr.BuildConfig
-import com.themasterspirit.easyflickr.ui.home.recent.RecentPhotosPresenter
 import com.themasterspirit.easyflickr.utils.FlickrLogger
 import com.themasterspirit.flickr.data.api.repositories.FlickrRepository
 import com.themasterspirit.flickr.data.api.retrofit.FlickrService
@@ -40,7 +39,7 @@ val flickrDataModule: Kodein.Module = Kodein.Module(name = "flickr_data") {
 }
 
 val presenterModule: Kodein.Module = Kodein.Module(name = "presenter") {
-    bind<RecentPhotosPresenter>() with factory { repository: FlickrRepository ->
-        RecentPhotosPresenter(repository)
-    }
+//    bind<RecentPhotosViewModel>() with factory { repository: FlickrRepository ->
+//        RecentPhotosViewModel(repository)
+//    }
 }

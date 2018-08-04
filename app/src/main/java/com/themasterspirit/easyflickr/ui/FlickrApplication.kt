@@ -5,7 +5,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.themasterspirit.easyflickr.BuildConfig
-import com.themasterspirit.easyflickr.ui.home.recent.RecentPhotosPresenter
+import com.themasterspirit.easyflickr.ui.home.recent.RecentPhotosViewModel
 import com.themasterspirit.easyflickr.utils.FlickrLogger
 import com.themasterspirit.flickr.data.api.repositories.FlickrRepository
 import com.themasterspirit.flickr.data.api.retrofit.FlickrInterceptor
@@ -47,8 +47,8 @@ class FlickrApplication : Application(), KodeinAware {
         }
 
 //        todo move to activity/fragment scope
-        bind<RecentPhotosPresenter>() with provider {
-            RecentPhotosPresenter(repository = instance())
+        bind<RecentPhotosViewModel>() with provider {
+            RecentPhotosViewModel(instance(), instance())
         }
 
         import(androidXModule(application))

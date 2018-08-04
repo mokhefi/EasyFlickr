@@ -1,5 +1,6 @@
 package com.themasterspirit.easyflickr.ui.home.recent
 
+import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import com.themasterspirit.easyflickr.ui.BaseFragment
 import com.themasterspirit.easyflickr.utils.Failure
 import com.themasterspirit.easyflickr.utils.Loading
 import com.themasterspirit.easyflickr.utils.Success
+import com.themasterspirit.easyflickr.utils.viewModelProvider
+import com.themasterspirit.flickr.data.api.repositories.FlickrRepository
 import kotlinx.android.synthetic.main.fragment_recent.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContext
@@ -21,12 +24,17 @@ import org.kodein.di.generic.kcontext
 
 class RecentPhotosFragment : BaseFragment() {
 
-    override val kodeinContext: KodeinContext<*> = kcontext(context)
+    override val kodeinContext: KodeinContext<*> = kcontext(activity)
 
     override val kodein: Kodein by closestKodein()
 
-    private val presenter: RecentPhotosPresenter by instance()
+    // todo
+    private val application: Application by instance()
+    private val repository: FlickrRepository by instance()
 
+    private val viewModel: RecentPhotosViewModel by viewModelProvider {
+        RecentPhotosViewModel(application, repository)
+    }
 
     private val adapter by lazy { PhotoAdapter() }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(context, 2) }
@@ -40,6 +48,7 @@ class RecentPhotosFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initObservers()
+        if (adapter.items.isEmpty()) viewModel.refreshPhotos()
     }
 
     override fun onDetach() {
@@ -49,16 +58,19 @@ class RecentPhotosFragment : BaseFragment() {
 
     private fun initViews() {
         swipeRefreshLayout.setOnRefreshListener {
-            presenter.refreshPhotos()
+            viewModel.refreshPhotos()
         }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
 
     private fun initObservers() {
-        presenter.recentPhotos.observe(this, Observer { data ->
+        viewModel.recentPhotos.observe(this, Observer { data ->
             when (data) {
-                is Loading -> progress(data.loading)
+                is Loading -> {
+                    progress(data.loading)
+                    swipeRefreshLayout.isRefreshing = false
+                }
                 is Success -> {
                     adapter.items.clear()
                     adapter.items.addAll(data.result)
