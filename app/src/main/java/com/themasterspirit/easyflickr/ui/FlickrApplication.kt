@@ -18,9 +18,13 @@ import org.kodein.di.generic.kcontext
 class FlickrApplication : Application(), KodeinAware {
 
     override val kodeinContext: KodeinContext<*> = kcontext(this)
-
+    //    Kodein {
+//        extend(_parentKodein)
+//        /* activity specific bindings */
+//    }
     override val kodein: Kodein = Kodein.lazy {
         val application: FlickrApplication = this@FlickrApplication
+        extend(application.kodein)
 
         bind<Context>() with instance(application as Context)
         bind<FlickrLogger>() with instance(FlickrLogger())
@@ -29,7 +33,6 @@ class FlickrApplication : Application(), KodeinAware {
         import(utilModule)
         import(apiModule)
         import(flickrDataModule)
-
 
         import(viewModelModule) // todo move to activity/fragment scope
     }

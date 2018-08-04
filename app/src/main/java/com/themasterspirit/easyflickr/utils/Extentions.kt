@@ -1,8 +1,14 @@
 package com.themasterspirit.easyflickr.utils
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.themasterspirit.easyflickr.ui.FlickrApplication
+import org.kodein.di.Kodein
+
+val Application.kodein: Kodein
+    get() = (this as FlickrApplication).kodein
 
 fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)

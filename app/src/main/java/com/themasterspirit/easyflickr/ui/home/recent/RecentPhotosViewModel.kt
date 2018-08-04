@@ -27,7 +27,7 @@ class RecentPhotosViewModel(
     }
 
     fun refreshPhotos() {
-        repository.getRecent()
+        val disposable = repository.getRecent()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ data: List<FlickrPhoto> ->
