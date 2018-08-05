@@ -13,8 +13,8 @@ import com.themasterspirit.easyflickr.utils.Success
 import kotlinx.android.synthetic.main.activity_home.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContext
+import org.kodein.di.android.ActivityRetainedScope
 import org.kodein.di.android.retainedKodein
-import org.kodein.di.android.x.AndroidLifecycleScope
 import org.kodein.di.generic.*
 
 class HomeActivity : BaseActivity() {
@@ -23,27 +23,18 @@ class HomeActivity : BaseActivity() {
     override val kodein: Kodein by retainedKodein {
         extend(parentKodein)
 
-        // todo: scope doesn't work
-        bind<HomeViewModel>() with scoped(AndroidLifecycleScope<HomeActivity>()).singleton {
+        bind<HomeViewModel>() with scoped(ActivityRetainedScope<HomeActivity>()).singleton {
             FlickrAndroidViewModelFactory(application) {
                 HomeViewModel(application, instance())
             }.create(HomeViewModel::class.java)
         }
 
-//        bind<HomeViewModel>() with provider {
-//            FlickrAndroidViewModelFactory(application) {
-//                HomeViewModel(application, instance())
-//            }.create(HomeViewModel::class.java)
-//        }
+        bind<HomeViewModel>() with provider {
+            FlickrAndroidViewModelFactory(application) {
+                HomeViewModel(application, instance())
+            }.create(HomeViewModel::class.java)
+        }
     }
-
-//    override val kodein: Kodein by retainedKodein {
-//        extend(parentKodein, copy = Copy.All)
-//        bind() from instance(createViewModel(HomeViewModel::class.java))
-
-//        Example: using an Activity retained scope
-//        bind<Controller>() with scoped(AndroidLifecycleScope<Activity>()).singleton { ControllerImpl(context) }
-//    }
 
     private val viewModel: HomeViewModel by instance()
 
