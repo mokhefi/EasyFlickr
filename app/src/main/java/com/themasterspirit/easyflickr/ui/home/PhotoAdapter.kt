@@ -1,4 +1,4 @@
-package com.themasterspirit.easyflickr.ui.home.recent
+package com.themasterspirit.easyflickr.ui.home
 
 import android.view.View
 import android.view.ViewGroup
