@@ -1,79 +1,89 @@
 package com.themasterspirit.easyflickr.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.transaction
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
-import com.themasterspirit.easyflickr.ui.home.recent.RecentPhotosFragment
+import com.themasterspirit.easyflickr.utils.Failure
+import com.themasterspirit.easyflickr.utils.FlickrAndroidViewModelFactory
+import com.themasterspirit.easyflickr.utils.Loading
+import com.themasterspirit.easyflickr.utils.Success
 import kotlinx.android.synthetic.main.activity_home.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinContext
+import org.kodein.di.android.ActivityRetainedScope
+import org.kodein.di.android.retainedKodein
+import org.kodein.di.generic.*
 
 class HomeActivity : BaseActivity() {
 
-//    override val kodein: Kodein by retainedKodein {
-//        extend(parentKodein, copy = Copy.All)
-//        bind() from instance(createViewModel(HomeViewModel::class.java))
+    override val kodeinContext: KodeinContext<*> = kcontext(this@HomeActivity)
+    override val kodein: Kodein by retainedKodein {
+        extend(parentKodein)
 
-//        Example: using an Activity retained scope
-//        bind<Controller>() with scoped(AndroidLifecycleScope<Activity>()).singleton { ControllerImpl(context) }
-//    }
+        bind<HomeViewModel>() with scoped(ActivityRetainedScope<HomeActivity>()).singleton {
+            FlickrAndroidViewModelFactory(application) {
+                HomeViewModel(application, instance())
+            }.create(HomeViewModel::class.java)
+        }
 
-//    private val viewModel: HomeViewModel by instance()
+        bind<HomeViewModel>() with provider {
+            FlickrAndroidViewModelFactory(application) {
+                HomeViewModel(application, instance())
+            }.create(HomeViewModel::class.java)
+        }
+    }
+
+    private val viewModel: HomeViewModel by instance()
+
+    private val adapter by lazy { PhotoAdapter() }
+    private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(application, 2) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-//        logger.debug("HomeActivity", "onCreate()")
-
         initViews()
+        initObservers()
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.transaction {
-                replace(R.id.container, RecentPhotosFragment())
-            }
-        }
+        if (adapter.items.isEmpty()) viewModel.refreshPhotos()
     }
 
     private fun initViews() {
-        tvRecent.setOnClickListener {
-            title = getString(R.string.title_recent)
-            supportFragmentManager.transaction {
-                replace(R.id.container, RecentPhotosFragment())
+        swipeRefreshLayout.setOnRefreshListener { viewModel.refreshPhotos() }
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+    }
+
+    private fun initObservers() {
+        viewModel.recentPhotos.observe(this, Observer { data ->
+            when (data) {
+                is Loading -> {
+                    if (data.loading) {
+                        if (adapter.items.isEmpty()) {
+                        } else {
+                            swipeRefreshLayout.isRefreshing = true
+                        }
+                    } else {
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                }
+                is Success -> {
+                    adapter.items.clear()
+                    adapter.items.addAll(data.result)
+                    adapter.notifyDataSetChanged()
+                }
+                is Failure -> {
+                    val error = data.error ?: getString(R.string.message_default_error)
+                    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-        tvSearch.setOnClickListener {
-            title = getString(R.string.title_search)
-        }
-        tvSettings.setOnClickListener {
-            title = getString(R.string.title_settings)
-        }
+        })
+    }
+
+    companion object {
+        const val TAG = "HomeActivity"
     }
 }
-
-
-
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menu?.let { menuInflater.inflate(R.menu.navigation, it) }
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-//        return when (item?.itemId) {
-//            R.id.navigation_recent -> {
-//                title = getString(R.string.title_recent)
-//                supportFragmentManager.transaction {
-//                    replace(R.id.container, RecentPhotosFragment())
-//                }
-//                true
-//            }
-//            R.id.navigation_search -> {
-//                title = getString(R.string.title_search)
-//                true
-//            }
-//            R.id.navigation_settings -> {
-//                title = getString(R.string.title_settings)
-//                true
-//            }
-//            else -> false
-//        }
-//    }

@@ -33,7 +33,7 @@ dependencies {
     // ktx
     implementation 'androidx.core:core-ktx:1.0.0-beta01'
     implementation 'androidx.collection:collection-ktx:1.0.0-beta01'
-    implementation 'androidx.fragment:fragment-ktx:1.0.0-beta01'
+//    implementation 'androidx.fragment:fragment-ktx:1.0.0-beta01'
 //    implementation 'androidx.navigation-ui-ktx:1.0.0-beta01'
 //    implementation "android.arch.navigation: navigation-ui: 1.0.0-alpha01"
 //    implementation "android.arch.navigation: navigation-fragment-ktx: 1.0.0-alpha01 "
