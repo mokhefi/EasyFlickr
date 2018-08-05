@@ -4,4 +4,5 @@
     <color name="blue">#3F51B5</color>
     <color name="blue_dark">#303F9F</color>
     <color name="magenta">#ff00ff</color>
+    <color name="gray_700">#757575</color>
 </resources>

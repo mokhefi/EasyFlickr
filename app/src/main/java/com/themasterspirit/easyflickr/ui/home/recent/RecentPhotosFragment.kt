@@ -2,6 +2,7 @@ package com.themasterspirit.easyflickr.ui.home.recent
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,13 +40,13 @@ class RecentPhotosFragment : BaseFragment() {
     private val adapter by lazy { PhotoAdapter() }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(context, 2) }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recent, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        logger.log(TAG, "onViewCreated(); view = [$view], savedInstanceState = [$savedInstanceState]")
         initViews()
         initObservers()
         if (adapter.items.isEmpty()) viewModel.refreshPhotos()
@@ -53,13 +54,12 @@ class RecentPhotosFragment : BaseFragment() {
 
     override fun onDetach() {
         super.onDetach()
+        Log.d(TAG, "onDetach(); ")
         Toast.makeText(context, "detach", Toast.LENGTH_SHORT).show()
     }
 
     private fun initViews() {
-        swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshPhotos()
-        }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.refreshPhotos() }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
@@ -68,8 +68,16 @@ class RecentPhotosFragment : BaseFragment() {
         viewModel.recentPhotos.observe(this, Observer { data ->
             when (data) {
                 is Loading -> {
-                    progress(data.loading)
-                    swipeRefreshLayout.isRefreshing = false
+                    if (data.loading) {
+                        if (adapter.items.isEmpty()) {
+                            progress(true)
+                        } else {
+                            swipeRefreshLayout.isRefreshing = true
+                        }
+                    } else {
+                        progress(false)
+                        swipeRefreshLayout.isRefreshing = false
+                    }
                 }
                 is Success -> {
                     adapter.items.clear()
@@ -82,5 +90,9 @@ class RecentPhotosFragment : BaseFragment() {
                 }
             }
         })
+    }
+
+    companion object {
+        const val TAG = "RecentPhotosFragment"
     }
 }

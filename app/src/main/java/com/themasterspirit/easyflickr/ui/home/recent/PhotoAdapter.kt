@@ -29,6 +29,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
             with(itemView) {
                 Picasso.get()
                         .load(photo.link)
+                        .placeholder(R.drawable.ic_placeholder_photo)
+                        .error(R.drawable.ic_placeholder_photo_broken)
                         .fit()
                         .centerCrop()
                         .into(ivPhoto)
