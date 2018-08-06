@@ -68,7 +68,7 @@ class PhotoActivity : BaseActivity() {
         ivPhoto.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE)
 
         val thumbnail = flickrPhoto.link(FlickrPhoto.Companion.Size.DEFAULT)
-        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.ORIGIN)
+        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.LARGE)
 
         ivPhoto.showImage(Uri.parse(thumbnail), Uri.parse(origin))
     }

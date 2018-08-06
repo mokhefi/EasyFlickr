@@ -117,6 +117,10 @@ data class FlickrPhoto(
              */
             MEDIUM("z"),
             /**
+             * large 1600, 1600 on longest side†
+             */
+            LARGE("b"),
+            /**
              * original image, either a jpg, gif or png, depending on source format
              */
             ORIGIN("o");

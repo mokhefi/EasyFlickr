@@ -3,6 +3,7 @@ package com.themasterspirit.easyflickr.ui.home
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -45,6 +46,10 @@ class HomeActivity : BaseActivity() {
         getString(R.string.text_search_initial)
     }
     private var searchView: SearchView? = null
+        set(value) {
+            field = value
+            value?.let { initSearchView(it) }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,23 +63,11 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.home, menu)
-        val searchView: SearchView = menu.findItem(R.id.actionSearch).actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.search(query ?: initialSearchText)
-                return true
-            }
+        return true
+    }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-        })
-        searchView.setOnCloseListener {
-            // todo: doesn't work
-            viewModel.search(initialSearchText)
-            true
-        }
-        this@HomeActivity.searchView = searchView
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        searchView = menu.findItem(R.id.actionSearch).actionView as SearchView
         return true
     }
 
@@ -90,6 +83,24 @@ class HomeActivity : BaseActivity() {
             startActivity(Intent(this@HomeActivity, PhotoActivity::class.java).apply {
                 putExtra(FlickrPhoto.TAG, photo)
             })
+        }
+    }
+
+    private fun initSearchView(search: SearchView) {
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.search(query ?: initialSearchText)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+        search.setOnCloseListener {
+            // todo: doesn't work
+            viewModel.search(initialSearchText)
+            true
         }
     }
 
@@ -110,6 +121,7 @@ class HomeActivity : BaseActivity() {
                     adapter.items.clear()
                     adapter.items.addAll(data.result)
                     adapter.notifyDataSetChanged()
+                    tvEmptyView.visibility = if (adapter.items.isEmpty()) View.VISIBLE else View.GONE
                 }
                 is Failure -> {
                     val error = data.error ?: getString(R.string.message_default_error)

@@ -12,7 +12,7 @@ class FlickrRepository(private val service: FlickrService) {
                 .map { response ->
                     response.photos.photo
                             .map { it.fromResponse() }
-                            .filter { it.originalFormat != null }
+//                            .filter { it.originalFormat != null }
                 }
     }
 }
