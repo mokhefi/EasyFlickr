@@ -55,7 +55,7 @@ class PhotoActivity : BaseActivity() {
         containerBottomControls.setPadding(0, 0, 0, navigationBarHeightPx)
 
         tvTitle.text = flickrPhoto.title
-        tvDateUpload.text = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(flickrPhoto.dateUpload)
+        tvDateUpload.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(flickrPhoto.dateUpload)
         tvOwnerName.text = flickrPhoto.ownerName
         tvViewCount.text = flickrPhoto.formattedViewCount
 
