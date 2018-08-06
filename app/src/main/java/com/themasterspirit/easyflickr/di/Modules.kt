@@ -15,8 +15,7 @@ val utilModule = Kodein.Module(name = "utils") {
     bind<FlickrLogger>() with eagerSingleton { FlickrLogger() }
 
     bind<Gson>() with singleton {
-        GsonBuilder() // .setDateFormat()
-                .create()
+        GsonBuilder().create() // .setDateFormat(DateFormat.LONG)
     }
 }
 
@@ -26,7 +25,7 @@ val apiModule = Kodein.Module(name = "api") {
                 gson = instance(),
                 context = instance(),
                 debug = BuildConfig.DEBUG,
-                interceptors = *arrayOf(FlickrInterceptor(instance()))
+                interceptors = *arrayOf(FlickrInterceptor(context = instance()))
         )
     }
 }

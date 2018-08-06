@@ -2,10 +2,13 @@ package com.themasterspirit.easyflickr.ui
 
 import android.app.Application
 import android.content.Context
+import com.github.piasy.biv.BigImageViewer
+import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.themasterspirit.easyflickr.di.apiModule
 import com.themasterspirit.easyflickr.di.flickrDataModule
 import com.themasterspirit.easyflickr.di.utilModule
 import com.themasterspirit.easyflickr.utils.FlickrLogger
+import com.themasterspirit.easyflickr.utils.application
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
@@ -30,10 +33,11 @@ class FlickrApplication : Application(), KodeinAware {
         import(flickrDataModule)
     }
 
-    private val logger: FlickrLogger by instance()
+    val logger: FlickrLogger by instance()
 
     override fun onCreate() {
         super.onCreate()
         logger.log("app", "onCreate()")
+        BigImageViewer.initialize(GlideImageLoader.with(application))
     }
 }

@@ -22,6 +22,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://dl.bintray.com/kodein-framework/Kodein-DI" }
+        maven { url  "http://dl.bintray.com/piasy/maven" }
 //        maven { url "https://jitpack.io" }
 //        mavenCentral()
     }

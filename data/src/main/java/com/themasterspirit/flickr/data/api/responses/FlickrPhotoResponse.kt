@@ -11,5 +11,11 @@ data class FlickrPhotoResponse(
         @SerializedName("title") val title: String,
         @SerializedName("ispublic") val isPublic: Int,
         @SerializedName("isfriend") val isFriend: Int,
-        @SerializedName("isfamily") val isFamily: Int
+        @SerializedName("isfamily") val isFamily: Int,
+        @SerializedName("dateupload") val dateUpload: Long,
+        @SerializedName("ownername") val ownerName: String,
+        @SerializedName("views") val views: String,
+        @SerializedName("tags") val tags: String,
+        @SerializedName("originalsecret") val originalSecret: String?,
+        @SerializedName("originalformat") val originalFormat: String?
 )
