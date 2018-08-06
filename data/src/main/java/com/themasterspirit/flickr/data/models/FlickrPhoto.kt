@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.themasterspirit.flickr.data.api.responses.FlickrPhotoResponse
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Parcelize
 data class FlickrPhoto(
@@ -25,7 +26,7 @@ data class FlickrPhoto(
 ) : Parcelable {
 
     fun link(size: Size = Size.DEFAULT): String {
-        val suffix = size.suffix()?.let { suffix ->
+        val suffix = size.suffix?.let { suffix ->
             if (originalSecret == null || originalFormat == null) "_z" else "_$suffix"
         } ?: ""
 
@@ -77,7 +78,7 @@ data class FlickrPhoto(
          *
          * (†) Medium 800, large 1600, and large 2048 photos only exist after March 1st 2012.
          */
-        enum class Size(private val suffix: String?) {
+        enum class Size(val suffix: String?) {
             /**
              * small square 75x75
              */
@@ -135,7 +136,7 @@ fun FlickrPhotoResponse.fromResponse(): FlickrPhoto {
             isPublic = isPublic != 0,
             isFriend = isFriend != 0,
             isFamily = isFamily != 0,
-            dateUpload = Date(dateUpload),
+            dateUpload = Date(TimeUnit.SECONDS.toMillis(dateUpload)),
             ownerName = ownerName,
             views = views,
             tags = tags,
