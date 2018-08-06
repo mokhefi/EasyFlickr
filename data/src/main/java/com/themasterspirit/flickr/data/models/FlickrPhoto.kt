@@ -2,6 +2,7 @@ package com.themasterspirit.flickr.data.models
 
 import android.os.Parcelable
 import com.themasterspirit.flickr.data.api.responses.FlickrPhotoResponse
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -24,6 +25,18 @@ data class FlickrPhoto(
         val originalSecret: String?,
         val originalFormat: String?
 ) : Parcelable {
+
+    // todo: find format library
+    @IgnoredOnParcel
+    val formattedViewCount: String
+        get() {
+            val viewCount = views.toLong()
+            return when (viewCount) {
+                in 1_000..999_999 -> "${viewCount / 1_100}K"
+                in 1_000_000..999_999_999 -> "${viewCount / 1_100_100}M"
+                else -> "$viewCount"
+            }
+        }
 
     fun link(size: Size = Size.DEFAULT): String {
         val suffix = size.suffix?.let { suffix ->

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.themasterspirit.easyflickr.widgets.SquareConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="4dp"
+    android:padding="@dimen/home_photo_offset_half_size"
     tools:layout_height="200dp"
     tools:layout_width="200dp">
 
@@ -14,7 +15,44 @@
         android:layout_height="match_parent"
         android:background="@color/gray_400"
         android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvViewCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/background_photo_navigation"
+        android:drawableEnd="@drawable/ic_photo_view_count"
+        android:drawablePadding="4dp"
+        android:gravity="end|center_vertical"
+        android:padding="4dp"
+        android:textColor="@color/icon_photo"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/tvOwnerName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/background_photo_navigation"
+        android:drawableStart="@drawable/ic_photo_owner"
+        android:drawablePadding="4dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:textColor="@color/icon_photo"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvViewCount"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="@tools:sample/full_names" />
 
 </com.themasterspirit.easyflickr.widgets.SquareConstraintLayout>

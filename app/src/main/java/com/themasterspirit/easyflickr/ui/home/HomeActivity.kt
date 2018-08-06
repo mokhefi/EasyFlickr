@@ -51,11 +51,11 @@ class HomeActivity : BaseActivity() {
         initViews()
         initObservers()
 
-        if (adapter.items.isEmpty()) viewModel.refreshPhotos()
+        if (adapter.items.isEmpty()) viewModel.search("nature")
     }
 
     private fun initViews() {
-        swipeRefreshLayout.setOnRefreshListener { viewModel.refreshPhotos() }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.search("") }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 

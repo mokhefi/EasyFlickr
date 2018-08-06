@@ -7,9 +7,10 @@ import io.reactivex.Single
 
 class FlickrRepository(private val service: FlickrService) {
 
-    fun getRecent(): Single<List<FlickrPhoto>> {
-        return service
-                .getRecent()
-                .map { response -> response.photos.photo.map { it.fromResponse() } }
+    fun search(text: String = ""): Single<List<FlickrPhoto>> {
+        return service.search(text = text)
+                .map { response ->
+                    response.photos.photo.map { it.fromResponse() }
+                }
     }
 }

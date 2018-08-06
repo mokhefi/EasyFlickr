@@ -36,6 +36,9 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
             with(itemView) {
                 ivPhoto.loadFlickrPhoto(photo, expectedSize = FlickrPhoto.Companion.Size.DEFAULT)
                 ivPhoto.setOnClickListener { onItemClickListener?.invoke(photo) }
+
+                tvOwnerName.text = photo.ownerName
+                tvViewCount.text = photo.formattedViewCount
             }
         }
     }
