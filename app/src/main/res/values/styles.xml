@@ -7,7 +7,8 @@
     </style>
 
     <style name="PhotoActivityTheme" parent="Theme.AppCompat.NoActionBar">
-
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
 </resources>

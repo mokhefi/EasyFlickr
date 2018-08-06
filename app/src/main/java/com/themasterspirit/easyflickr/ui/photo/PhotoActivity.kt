@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import com.github.piasy.biv.view.BigImageView
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
@@ -21,6 +22,8 @@ class PhotoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo)
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     override fun onStart() {
@@ -47,11 +50,14 @@ class PhotoActivity : BaseActivity() {
         }
 
         tvTitle.text = flickrPhoto.title
-        tvDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(flickrPhoto.dateUpload)
-        title = flickrPhoto.ownerName
+        tvDateUpload.text = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(flickrPhoto.dateUpload)
+        tvOwnerName.text = flickrPhoto.ownerName
+        tvViewCount.text = flickrPhoto.formattedViewCount
+
+        title = ""
 
         ivPhoto.setOnClickListener {
-            if (tvTitle.visibility == View.VISIBLE) hideUi() else showUi()
+            if (containerTopControls.visibility == View.VISIBLE) hideUi() else showUi()
         }
 
         ivPhoto.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE)
@@ -64,16 +70,16 @@ class PhotoActivity : BaseActivity() {
 
     private fun hideUi() {
         hideSystemUi()
-        tvTitle.visibility = View.GONE
-        tvDate.visibility = View.GONE
-        toolbar.visibility = View.GONE
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
+            it.visibility = View.GONE
+        }
     }
 
     private fun showUi() {
         showSystemUi()
-        tvTitle.visibility = View.VISIBLE
-        tvDate.visibility = View.VISIBLE
-        toolbar.visibility = View.VISIBLE
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
+            it.visibility = View.VISIBLE
+        }
 
     }
 
@@ -85,13 +91,8 @@ class PhotoActivity : BaseActivity() {
     private fun hideSystemUi() {
         val decorView = window.decorView
         decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
@@ -102,8 +103,6 @@ class PhotoActivity : BaseActivity() {
      */
     private fun showSystemUi() {
         val decorView = window.decorView
-        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 }

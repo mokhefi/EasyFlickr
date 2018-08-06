@@ -51,11 +51,11 @@ class HomeActivity : BaseActivity() {
         initViews()
         initObservers()
 
-        if (adapter.items.isEmpty()) viewModel.search("nature")
+        if (adapter.items.isEmpty()) viewModel.search(getString(R.string.text_search_default))
     }
 
     private fun initViews() {
-        swipeRefreshLayout.setOnRefreshListener { viewModel.search("") }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.search(getString(R.string.text_search_default)) }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 

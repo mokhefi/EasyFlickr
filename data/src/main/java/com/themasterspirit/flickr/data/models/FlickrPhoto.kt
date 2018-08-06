@@ -30,11 +30,15 @@ data class FlickrPhoto(
     @IgnoredOnParcel
     val formattedViewCount: String
         get() {
-            val viewCount = views.toLong()
-            return when (viewCount) {
-                in 1_000..999_999 -> "${viewCount / 1_100}K"
-                in 1_000_000..999_999_999 -> "${viewCount / 1_100_100}M"
-                else -> "$viewCount"
+            return try {
+                val viewCount = views.toLong()
+                return when (viewCount) {
+                    in 1_000..999_999 -> "${viewCount / 1_100}K"
+                    in 1_000_000..999_999_999 -> "${viewCount / 1_100_100}M"
+                    else -> "$viewCount"
+                }
+            } catch (e: ClassCastException) {
+                views
             }
         }
 
