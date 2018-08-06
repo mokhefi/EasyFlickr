@@ -63,7 +63,7 @@ class HomeActivity : BaseActivity() {
         adapter.onItemClickListener = { photo: FlickrPhoto, bitmap: Bitmap? ->
             startActivity(Intent(this@HomeActivity, PhotoActivity::class.java).apply {
                 putExtra(FlickrPhoto.TAG, photo)
-                putExtra("bitmap", bitmap)
+//                putExtra("bitmap", bitmap)
             })
         }
     }

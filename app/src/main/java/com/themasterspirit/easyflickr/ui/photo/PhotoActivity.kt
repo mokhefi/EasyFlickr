@@ -1,7 +1,5 @@
 package com.themasterspirit.easyflickr.ui.photo
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -10,6 +8,7 @@ import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
 import com.themasterspirit.flickr.data.models.FlickrPhoto
 import kotlinx.android.synthetic.main.activity_photo.*
+import java.text.DateFormat
 
 
 class PhotoActivity : BaseActivity() {
@@ -18,9 +17,9 @@ class PhotoActivity : BaseActivity() {
         intent.getParcelableExtra<FlickrPhoto>(FlickrPhoto.TAG)
     }
 
-    private val placeholder: Bitmap by lazy {
-        intent.getParcelableExtra<Bitmap>("bitmap")
-    }
+//    private val placeholder: Bitmap by lazy {
+//        intent.getParcelableExtra<Bitmap>("bitmap")
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,29 +44,37 @@ class PhotoActivity : BaseActivity() {
     private fun initViews() {
         setSupportActionBar(toolbar)
         supportActionBar?.let { actionBar ->
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_back_photo)
+//            actionBar.setHomeAsUpIndicator(R.drawable.ic_back_photo)
+            toolbar.setNavigationIcon(R.drawable.ic_back_photo)
             actionBar.setDisplayShowHomeEnabled(true)
+            actionBar.setDisplayHomeAsUpEnabled(true)
         }
         Picasso.get()
-                .load(flickrPhoto.link(FlickrPhoto.Companion.Size.ORIGIN))
-                .placeholder(BitmapDrawable(resources, placeholder))
+                .load(flickrPhoto.link(FlickrPhoto.Companion.Size.MEDIUM))
+//                .placeholder(BitmapDrawable(resources, placeholder))
                 .into(ivPhoto)
 
+        tvAuthor.text = flickrPhoto.ownerName
+        tvDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                .format(flickrPhoto.dateUpload)
+
+        toolbar.title = flickrPhoto.title
+
         ivPhoto.setOnClickListener {
-            if (tvTitle.visibility == View.VISIBLE) hideUi() else showUi()
+            if (tvAuthor.visibility == View.VISIBLE) hideUi() else showUi()
         }
     }
 
     private fun hideUi() {
         hideSystemUi()
-        tvTitle.visibility = View.GONE
+        tvAuthor.visibility = View.GONE
         tvDate.visibility = View.GONE
         toolbar.visibility = View.GONE
     }
 
     private fun showUi() {
         showSystemUi()
-        tvTitle.visibility = View.VISIBLE
+        tvAuthor.visibility = View.VISIBLE
         tvDate.visibility = View.VISIBLE
         toolbar.visibility = View.VISIBLE
 

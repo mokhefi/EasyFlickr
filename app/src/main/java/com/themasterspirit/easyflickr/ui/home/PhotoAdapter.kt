@@ -44,20 +44,22 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
         fun bind() {
             val photo: FlickrPhoto = items[adapterPosition]
 
-            val url: String = photo.link(FlickrPhoto.Companion.Size.THUMBNAIL_Q)
+            val url: String = photo.link(FlickrPhoto.Companion.Size.THUMBNAIL)
             logger.log(TAG, "photo url = [$url]")
 
             with(itemView) {
                 Picasso.get()
                         .load(url)
-                        .placeholder(R.drawable.ic_placeholder_photo)
-                        .error(R.drawable.ic_placeholder_photo_broken)
+//                        .placeholder(R.drawable.ic_placeholder_photo)
+//                        .error(R.drawable.ic_placeholder_photo_broken)
                         .into(object : Target {
                             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                                ivPhoto.setImageResource(R.drawable.ic_placeholder_photo)
                             }
 
                             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                                 logger.log(TAG, "onBitmapFailed(); e = [$e], errorDrawable = [$errorDrawable]", e)
+                                ivPhoto.setImageResource(R.drawable.ic_placeholder_photo_broken)
                             }
 
                             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {

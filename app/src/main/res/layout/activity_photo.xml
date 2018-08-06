@@ -33,7 +33,7 @@
         tools:title="My Awesome Photo" />
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/tvAuthor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_photo_navigation"
