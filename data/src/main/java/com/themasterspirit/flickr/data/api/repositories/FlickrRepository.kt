@@ -10,7 +10,9 @@ class FlickrRepository(private val service: FlickrService) {
     fun search(text: String = ""): Single<List<FlickrPhoto>> {
         return service.search(text = text)
                 .map { response ->
-                    response.photos.photo.map { it.fromResponse() }
+                    response.photos.photo
+                            .map { it.fromResponse() }
+                            .filter { it.originalFormat != null }
                 }
     }
 }

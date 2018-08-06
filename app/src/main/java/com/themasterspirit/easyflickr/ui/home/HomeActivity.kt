@@ -2,7 +2,9 @@ package com.themasterspirit.easyflickr.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
@@ -20,6 +22,7 @@ import org.kodein.di.android.ActivityRetainedScope
 import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.*
 
+
 class HomeActivity : BaseActivity() {
 
     override val kodeinContext: KodeinContext<*> = kcontext(this@HomeActivity)
@@ -31,18 +34,17 @@ class HomeActivity : BaseActivity() {
                 HomeViewModel(application, instance())
             }.create(HomeViewModel::class.java)
         }
-
-        bind<HomeViewModel>() with provider {
-            FlickrAndroidViewModelFactory(application) {
-                HomeViewModel(application, instance())
-            }.create(HomeViewModel::class.java)
-        }
     }
 
     private val viewModel: HomeViewModel by instance()
 
     private val adapter by lazy { PhotoAdapter() }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(application, 2) }
+
+    private val initialSearchText: String by lazy {
+        getString(R.string.text_search_initial)
+    }
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +53,36 @@ class HomeActivity : BaseActivity() {
         initViews()
         initObservers()
 
-        if (adapter.items.isEmpty()) viewModel.search(getString(R.string.text_search_default))
+        if (adapter.items.isEmpty()) viewModel.search(initialSearchText)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.home, menu)
+        val searchView: SearchView = menu.findItem(R.id.actionSearch).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.search(query ?: initialSearchText)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+        searchView.setOnCloseListener {
+            // todo: doesn't work
+            viewModel.search(initialSearchText)
+            true
+        }
+        this@HomeActivity.searchView = searchView
+        return true
     }
 
     private fun initViews() {
-        swipeRefreshLayout.setOnRefreshListener { viewModel.search(getString(R.string.text_search_default)) }
+        swipeRefreshLayout.setOnRefreshListener {
+            val query: String? = searchView?.query?.toString()
+            viewModel.search(if (query?.isNotEmpty() == true) query else initialSearchText)
+        }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
