@@ -13,6 +13,10 @@ fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
+//fun ImageView.picasso(url: String) {
+//
+//}
+
 //inline fun <reified VM : ViewModel> Fragment.viewModelProvider(
 //        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.NONE,
 //        crossinline provider: () -> VM

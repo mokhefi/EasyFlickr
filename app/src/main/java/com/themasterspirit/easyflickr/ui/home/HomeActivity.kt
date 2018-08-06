@@ -1,15 +1,19 @@
 package com.themasterspirit.easyflickr.ui.home
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
+import com.themasterspirit.easyflickr.ui.photo.PhotoActivity
 import com.themasterspirit.easyflickr.utils.Failure
 import com.themasterspirit.easyflickr.utils.FlickrAndroidViewModelFactory
 import com.themasterspirit.easyflickr.utils.Loading
 import com.themasterspirit.easyflickr.utils.Success
+import com.themasterspirit.flickr.data.models.FlickrPhoto
 import kotlinx.android.synthetic.main.activity_home.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContext
@@ -55,6 +59,13 @@ class HomeActivity : BaseActivity() {
         swipeRefreshLayout.setOnRefreshListener { viewModel.refreshPhotos() }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
+        adapter.onItemClickListener = { photo: FlickrPhoto, bitmap: Bitmap? ->
+            startActivity(Intent(this@HomeActivity, PhotoActivity::class.java).apply {
+                putExtra(FlickrPhoto.TAG, photo)
+                putExtra("bitmap", bitmap)
+            })
+        }
     }
 
     private fun initObservers() {

@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">@color/blue_dark</color>
     <color name="colorAccent">@color/magenta</color>
 
-    <color name="bg_placeholder">@color/gray_700</color>
+    <color name="background_placeholder">@color/gray_700</color>
+
+    <color name="background_photo">@color/black</color>
+    <color name="background_photo_navigation">@color/black_opacity_200</color>
+    <color name="icon_photo">@color/white</color>
 </resources>
