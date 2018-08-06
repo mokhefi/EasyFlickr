@@ -1,7 +1,6 @@
 package com.themasterspirit.easyflickr.ui.home
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -60,10 +59,9 @@ class HomeActivity : BaseActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
-        adapter.onItemClickListener = { photo: FlickrPhoto, bitmap: Bitmap? ->
+        adapter.onItemClickListener = { photo: FlickrPhoto ->
             startActivity(Intent(this@HomeActivity, PhotoActivity::class.java).apply {
                 putExtra(FlickrPhoto.TAG, photo)
-//                putExtra("bitmap", bitmap)
             })
         }
     }

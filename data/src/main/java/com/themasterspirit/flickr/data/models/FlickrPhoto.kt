@@ -108,6 +108,18 @@ data class FlickrPhoto(
             fun suffix(): String? {
                 return suffix
             }
+
+//            fun next(expected: Size): Size? {
+//                if (expected == this) return null
+//                return when (this) {
+//                    THUMBNAIL_S -> THUMBNAIL_Q
+//                    THUMBNAIL_Q -> DEFAULT
+//                    THUMBNAIL -> DEFAULT
+//                    DEFAULT -> MEDIUM
+//                    MEDIUM -> ORIGIN
+//                    ORIGIN -> null
+//                }
+//            }
         }
     }
 }

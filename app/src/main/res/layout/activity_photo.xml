@@ -8,7 +8,7 @@
     android:background="@color/background_photo"
     android:fitsSystemWindows="true">
 
-    <ImageView
+    <com.github.piasy.biv.view.BigImageView
         android:id="@+id/ivPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,9 +17,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:optimizeDisplay="true"
+        tools:background="@color/magenta"
         tools:ignore="ContentDescription"
-        tools:scaleType="centerCrop"
-        tools:src="@tools:sample/avatars" />
+        tools:scaleType="centerCrop" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -33,7 +34,7 @@
         tools:title="My Awesome Photo" />
 
     <TextView
-        android:id="@+id/tvAuthor"
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_photo_navigation"
