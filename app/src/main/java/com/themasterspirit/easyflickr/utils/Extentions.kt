@@ -35,29 +35,40 @@ fun ImageView.loadFlickrPhoto(
             .asBitmap()
             .load(link)
             .into(this)
-//    Picasso.get()
-//            .load(link)
-//            .apply { placeholder?.let { placeholder(it) } }
-//            .into(object : Target {
-//                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-//                    logger.log("ImageView", "onPrepareLoad(); placeHolderDrawable = [$placeHolderDrawable]")
-//                    target?.onPrepareLoad(placeHolderDrawable)
-//                    placeholder?.let { setImageDrawable(it) }
-//                }
-//
-//                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-//                    logger.log("ImageView", "onBitmapFailed(); e = [$e], errorDrawable = [$errorDrawable]", e)
-//                    target?.onBitmapFailed(e, errorDrawable)
-//                    setImageResource(R.drawable.ic_placeholder_photo_broken)
-//                }
-//
-//                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-//                    logger.log("ImageView", "onBitmapLoaded(); bitmap = [$bitmap], from = [$from]")
-//                    target?.onBitmapLoaded(bitmap, from)
-//                    setImageBitmap(bitmap)
-//                }
-//            })
 }
+
+// status bar height
+val Context.statusBarHeightPx: Int
+    get() {
+        val resId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resId > 0) {
+            resources.getDimensionPixelSize(resId)
+        } else 0
+    }
+
+// navigation bar height
+val Context.navigationBarHeightPx: Int
+    get() {
+        val resId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        return if (resId > 0) {
+            resources.getDimensionPixelSize(resId)
+        } else 0
+    }
+
+// action bar height
+//val FragmentActivity.actionBarHeight: Int
+//    get() {
+//        theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize)).let {
+//
+//        }
+//    }
+//int actionBarHeight = 0;
+//final TypedArray styledAttributes = getActivity().getTheme().obtainStyledAttributes(
+//new int[] { android.R.attr.actionBarSize }
+//);
+//actionBarHeight = (int) styledAttributes.getDimension(0, 0);
+//styledAttributes.recycle();
+
 
 //inline fun <reified VM : ViewModel> Fragment.viewModelProvider(
 //        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.NONE,
