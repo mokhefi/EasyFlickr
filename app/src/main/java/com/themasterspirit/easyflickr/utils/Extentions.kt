@@ -1,8 +1,6 @@
 package com.themasterspirit.easyflickr.utils
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,11 +25,13 @@ fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View {
 
 fun ImageView.loadFlickrPhoto(
         photo: FlickrPhoto,
-        expectedSize: FlickrPhoto.Companion.Size = FlickrPhoto.Companion.Size.DEFAULT,
-        placeholder: Drawable? = null,
-        callback: ((Bitmap?) -> Unit)? = null
+        expectedSize: FlickrPhoto.Companion.Size = FlickrPhoto.Companion.Size.DEFAULT
+//        ,
+//        placeholder: Drawable? = null
+//        ,
+//        callback: ((Bitmap?) -> Unit)? = null
 ) {
-    val logger = context.application.logger
+//    val logger = context.application.logger
     val link: String = photo.link(expectedSize)
 //    logger.log("ImageView", "photo url = [$link]")
     Glide.with(this)

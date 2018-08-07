@@ -26,15 +26,18 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // androidx
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation "androidx.appcompat:appcompat:$android_x_version"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'androidx.core:core:1.0.0-beta01' // (*)
+    implementation "androidx.core:core:$android_x_version" // (*)
 
     // ktx
-    implementation 'androidx.core:core-ktx:1.0.0-beta01'
-    implementation 'androidx.collection:collection-ktx:1.0.0-beta01'
+    implementation "androidx.core:core-ktx:$android_x_version"
+
+//    implementation 'androidx.collection:collection-ktx:1.0.0-beta01'
+
 //    implementation 'androidx.fragment:fragment-ktx:1.0.0-beta01'
 //    implementation 'androidx.navigation-ui-ktx:1.0.0-beta01'
+
 //    implementation "android.arch.navigation: navigation-ui: 1.0.0-alpha01"
 //    implementation "android.arch.navigation: navigation-fragment-ktx: 1.0.0-alpha01 "
 
@@ -44,23 +47,29 @@ dependencies {
     implementation 'org.kodein.di:kodein-di-framework-android-x:5.2.0'
 
     // rx
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
     // pictures
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
-
     implementation 'com.github.bumptech.glide:glide:4.7.1'
 //    kapt 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'jp.wasabeef:glide-transformations:3.3.0'
 
-    implementation 'com.github.piasy:BigImageViewer:1.4.6'
-    implementation 'com.github.piasy:GlideImageLoader:1.4.6'
+    implementation('com.github.piasy:BigImageViewer:1.4.6') {
+        exclude group: 'com.squareup.okhttp3'
+    }
+    implementation('com.github.piasy:GlideImageLoader:1.4.6') {
+        exclude group: 'com.squareup.okhttp3'
+    }
+
+//    implementation 'com.squareup.picasso:picasso:2.71828'
+//    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
 
     // other
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.google.code.gson:gson:2.8.5'
+    //noinspection GradleDependency
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 
     // data
     implementation project(':data')
