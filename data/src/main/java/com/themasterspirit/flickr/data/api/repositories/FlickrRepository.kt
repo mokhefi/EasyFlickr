@@ -36,6 +36,10 @@ class FlickrRepository(
 
     fun searchSuggestions(text: String): Cursor = searchDao.searchCursor(text)
 
+    fun deleteSuggestion(vararg text: String): Single<Int> {
+        return Single.just(text).map { query: Array<out String> -> searchDao.deleteByQuery(*query) }
+    }
+
     @SuppressLint("CheckResult")
     fun saveSearchQuerySilent(text: String) {
         if (text.isNotEmpty()) {

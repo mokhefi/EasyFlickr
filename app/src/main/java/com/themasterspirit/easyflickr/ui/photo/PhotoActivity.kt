@@ -1,10 +1,11 @@
 package com.themasterspirit.easyflickr.ui.photo
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import androidx.core.net.toUri
+import androidx.core.view.updatePadding
 import com.github.piasy.biv.view.BigImageView
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
@@ -51,8 +52,8 @@ class PhotoActivity : BaseActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        containerTopControls.setPadding(0, statusBarHeightPx, 0, 0)
-        containerBottomControls.setPadding(0, 0, 0, navigationBarHeightPx)
+        containerTopControls.updatePadding(top = statusBarHeightPx)
+        containerBottomControls.updatePadding(bottom = navigationBarHeightPx)
 
         tvTitle.text = flickrPhoto.title
         tvDateUpload.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(flickrPhoto.dateUpload)
@@ -70,7 +71,7 @@ class PhotoActivity : BaseActivity() {
         val thumbnail = flickrPhoto.link(FlickrPhoto.Companion.Size.DEFAULT)
         val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.LARGE)
 
-        ivPhoto.showImage(Uri.parse(thumbnail), Uri.parse(origin))
+        ivPhoto.showImage(thumbnail.toUri(), origin.toUri())
     }
 
     private fun hideUi() {

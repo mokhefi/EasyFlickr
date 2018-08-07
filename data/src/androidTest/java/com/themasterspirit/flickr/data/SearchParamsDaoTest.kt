@@ -7,6 +7,7 @@ import com.themasterspirit.flickr.data.db.FlickrDatabase
 import com.themasterspirit.flickr.data.db.models.SearchParams
 import com.themasterspirit.flickr.data.db.models.SearchParamsDao
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,7 +51,7 @@ class SearchParamsDaoTest {
     fun testWrite() {
         dao.insert(*initialData.toTypedArray())
         dao.get().test()
-                .assertValues(initialData)
+                .assertValue(initialData)
                 .assertNoErrors()
     }
 
@@ -72,7 +73,16 @@ class SearchParamsDaoTest {
         dao.insert(*initialData.toTypedArray())
         dao.delete(*itemsToDelete.toTypedArray())
 
-        dao.get().test().assertValues(itemsLeft)
+        dao.get().test().assertValue(itemsLeft)
+
+        val queryToDelete = itemsLeft.first().query
+        val expectedResult = listOf(itemsLeft.last())
+
+        val deletedItemCount = dao.deleteByQuery(queryToDelete)
+
+        dao.get().test().assertValue(expectedResult)
+
+        assertEquals(deletedItemCount, 1)
     }
 
     @Test

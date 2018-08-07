@@ -42,4 +42,7 @@ interface SearchParamsDao {
 
     @Delete
     fun delete(vararg params: SearchParams)
+
+    @Query("DELETE FROM search_params WHERE `query` = :query")
+    fun deleteByQuery(vararg query: String) : Int
 }

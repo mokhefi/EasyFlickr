@@ -27,6 +27,7 @@ class SearchViewModel(
 
     val recentPhotos = MutableLiveData<NetworkStatus<List<FlickrPhoto>>>()
     val searchSuggestions = MutableLiveData<Cursor>()
+    val deleteSuggestionsAction = SingleLiveEvent<Int>()
 
     init {
         logger.log(TAG, "init(); hash = [${hashCode()}]")
@@ -65,6 +66,16 @@ class SearchViewModel(
                     error.printStackTrace()
                     logger.log(TAG, "suggestion error", error)
                 })
+    }
+
+    fun deleteSuggestion(vararg text: String) {
+        disposables.add(repository.deleteSuggestion(*text)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    deleteSuggestionsAction.value = it
+                }) { error: Throwable -> error.printStackTrace() }
+        )
     }
 
     override fun onCleared() {

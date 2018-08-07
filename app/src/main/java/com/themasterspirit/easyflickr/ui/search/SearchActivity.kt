@@ -4,9 +4,9 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isGone
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
@@ -89,7 +89,9 @@ class SearchActivity : BaseActivity() {
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 logger.log(TAG, "onQueryTextSubmit(); query = [$query]")
-                viewModel.search(query ?: initialSearchText)
+                val text: String = query ?: initialSearchText
+                viewModel.search(text)
+                viewModel.updateSuggestions(text)
                 return true
             }
 
@@ -104,30 +106,14 @@ class SearchActivity : BaseActivity() {
                 }
             }
         })
-//        search.setOnCloseListener {
-//            // todo: doesn't work
-//            Log.d(TAG, "initSearchView(); ")
-//            Toast.makeText(application, "OnCloseListener.OnClick();", Toast.LENGTH_SHORT).show()
-//            viewModel.search(initialSearchText)
-//            true
-//        }
-//        search.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-//            override fun onSuggestionSelect(position: Int): Boolean {
-//                Toast.makeText(application, "onSuggestionSelect(); position = [$position]", Toast.LENGTH_LONG).show()
-//                return false
-//            }
-//
-//            override fun onSuggestionClick(position: Int): Boolean {
-//                Toast.makeText(application, "onSuggestionClick(); position = [$position]", Toast.LENGTH_LONG).show()
-//                return false
-//            }
-//        })
         search.autoCompleteTextView.threshold = 1
-        search.autoCompleteTextView.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && view is SearchView) {
-                view.autoCompleteTextView.showDropDown()
-            }
-        }
+//        search.autoCompleteTextView.setOnFocusChangeListener { view, hasFocus ->
+//            if (hasFocus && view is SearchView) {
+//                view.autoCompleteTextView.showDropDown()
+//            } else {
+////                search.autoCompleteTextView.setText("")
+//            }
+//        }
     }
 
     private fun initObservers() {
@@ -147,21 +133,37 @@ class SearchActivity : BaseActivity() {
                     adapter.items.clear()
                     adapter.items.addAll(data.result)
                     adapter.notifyDataSetChanged()
-                    tvEmptyView.visibility = if (adapter.items.isEmpty()) View.VISIBLE else View.GONE
+
+                    tvEmptyView.text = getString(R.string.message_no_data)
+                    tvEmptyView.isGone = adapter.items.isEmpty()
                     searchView?.clearFocus()
                 }
                 is Failure -> {
                     val error = data.error ?: getString(R.string.message_default_error)
-                    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                    if (adapter.items.isEmpty()) {
+                        tvEmptyView.text = error
+                    } else {
+                        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         })
 
         viewModel.searchSuggestions.observe(this, Observer { cursor: Cursor ->
             searchView?.let { search ->
-                search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor)
+                if (search.suggestionsAdapter is SearchSuggestionAdapter) {
+                    search.suggestionsAdapter.swapCursor(cursor)
+                } else {
+                    search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor).apply {
+                        onRemoveClickListener = { query: String -> viewModel.deleteSuggestion(query) }
+                    }
+                }
                 logger.log(TAG, "suggestions updated, query = [${search.query}] count = [${cursor.count}]")
             }
+        })
+
+        viewModel.deleteSuggestionsAction.observe(this, Observer {
+            searchView?.query?.toString()?.let { query -> viewModel.updateSuggestions(query) }
         })
     }
 
