@@ -1,7 +1,9 @@
-package com.themasterspirit.easyflickr.ui.home
+package com.themasterspirit.easyflickr.ui.search
 
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
@@ -16,7 +18,7 @@ import com.themasterspirit.easyflickr.utils.FlickrAndroidViewModelFactory
 import com.themasterspirit.easyflickr.utils.Loading
 import com.themasterspirit.easyflickr.utils.Success
 import com.themasterspirit.flickr.data.models.FlickrPhoto
-import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_search.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinContext
 import org.kodein.di.android.ActivityRetainedScope
@@ -24,20 +26,20 @@ import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.*
 
 
-class HomeActivity : BaseActivity() {
+class SearchActivity : BaseActivity() {
 
-    override val kodeinContext: KodeinContext<*> = kcontext(this@HomeActivity)
+    override val kodeinContext: KodeinContext<*> = kcontext(this@SearchActivity)
     override val kodein: Kodein by retainedKodein {
         extend(parentKodein)
 
-        bind<HomeViewModel>() with scoped(ActivityRetainedScope<HomeActivity>()).singleton {
+        bind<SearchViewModel>() with scoped(ActivityRetainedScope<SearchActivity>()).singleton {
             FlickrAndroidViewModelFactory(application) {
-                HomeViewModel(application, instance())
-            }.create(HomeViewModel::class.java)
+                SearchViewModel(application, repository = instance())
+            }.create(SearchViewModel::class.java)
         }
     }
 
-    private val viewModel: HomeViewModel by instance()
+    private val viewModel: SearchViewModel by instance()
 
     private val adapter by lazy { PhotoAdapter() }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(application, 2) }
@@ -45,6 +47,7 @@ class HomeActivity : BaseActivity() {
     private val initialSearchText: String by lazy {
         getString(R.string.text_search_initial)
     }
+
     private var searchView: SearchView? = null
         set(value) {
             field = value
@@ -53,7 +56,7 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.activity_search)
 
         initViews()
         initObservers()
@@ -80,13 +83,14 @@ class HomeActivity : BaseActivity() {
         recyclerView.adapter = adapter
 
         adapter.onItemClickListener = { photo: FlickrPhoto ->
-            startActivity(Intent(this@HomeActivity, PhotoActivity::class.java).apply {
+            startActivity(Intent(this@SearchActivity, PhotoActivity::class.java).apply {
                 putExtra(FlickrPhoto.TAG, photo)
             })
         }
     }
 
     private fun initSearchView(search: SearchView) {
+        search.queryHint = getString(R.string.search_query_hint_text)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.search(query ?: initialSearchText)
@@ -94,14 +98,29 @@ class HomeActivity : BaseActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                return if (newText?.isNotEmpty() == true) {
+                    viewModel.updateSuggestions(newText)
+                    true
+                } else {
+                    false
+                }
             }
         })
         search.setOnCloseListener {
             // todo: doesn't work
+            Log.d(TAG, "initSearchView(); ")
+            Toast.makeText(application, "OnCloseListener.OnClick();", Toast.LENGTH_SHORT).show()
             viewModel.search(initialSearchText)
             true
         }
+        search.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+            override fun onSuggestionSelect(position: Int): Boolean {
+                Toast.makeText(application, "onSuggestionSelect(); position = [$position]", Toast.LENGTH_LONG).show()
+                return true
+            }
+
+            override fun onSuggestionClick(position: Int): Boolean = false
+        })
     }
 
     private fun initObservers() {
@@ -122,6 +141,7 @@ class HomeActivity : BaseActivity() {
                     adapter.items.addAll(data.result)
                     adapter.notifyDataSetChanged()
                     tvEmptyView.visibility = if (adapter.items.isEmpty()) View.VISIBLE else View.GONE
+                    searchView?.clearFocus()
                 }
                 is Failure -> {
                     val error = data.error ?: getString(R.string.message_default_error)
@@ -129,9 +149,13 @@ class HomeActivity : BaseActivity() {
                 }
             }
         })
+
+        viewModel.searchSuggestions.observe(this, Observer { cursor: Cursor ->
+            searchView?.let { search -> search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor) }
+        })
     }
 
     companion object {
-        const val TAG = "HomeActivity"
+        const val TAG = "SearchActivity"
     }
 }

@@ -1,4 +1,4 @@
-package com.themasterspirit.easyflickr.ui.home
+package com.themasterspirit.easyflickr.ui.search
 
 import android.view.View
 import android.view.ViewGroup

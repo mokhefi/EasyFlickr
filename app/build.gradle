@@ -65,6 +65,13 @@ dependencies {
     // data
     implementation project(':data')
 
+    // room database
+    //noinspection GradleDependency
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    //noinspection GradleDependency
+    implementation "androidx.room:room-rxjava2:$room_version"
+
     // ViewModel and LiveData
 //    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
 //    implementation("android.arch.lifecycle:extensions:$lifecycle_version") {
