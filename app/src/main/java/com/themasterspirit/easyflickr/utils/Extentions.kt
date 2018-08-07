@@ -6,10 +6,13 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import androidx.appcompat.widget.SearchView
 import com.bumptech.glide.Glide
 import com.themasterspirit.easyflickr.ui.FlickrApplication
 import com.themasterspirit.flickr.data.models.FlickrPhoto
+import java.lang.reflect.Field
 
 val Context.application: FlickrApplication
     get() = this.applicationContext as FlickrApplication
@@ -30,12 +33,20 @@ fun ImageView.loadFlickrPhoto(
 ) {
     val logger = context.application.logger
     val link: String = photo.link(expectedSize)
-    logger.log("ImageView", "photo url = [$link]")
+//    logger.log("ImageView", "photo url = [$link]")
     Glide.with(this)
             .asBitmap()
             .load(link)
             .into(this)
 }
+
+val SearchView.autoCompleteTextView: AutoCompleteTextView
+    get() {
+        return this::class.java.getDeclaredField("mSearchSrcTextView").let { field: Field ->
+            field.isAccessible = true
+            return@let field.get(this@autoCompleteTextView) as AutoCompleteTextView
+        }
+    }
 
 // status bar height
 val Context.statusBarHeightPx: Int

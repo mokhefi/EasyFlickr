@@ -60,6 +60,7 @@ class SearchViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ cursor: Cursor ->
                     searchSuggestions.value = cursor
+                    logger.log(TAG, "suggestion success, count = [${cursor.count}]")
                 }) { error ->
                     error.printStackTrace()
                     logger.log(TAG, "suggestion error", error)

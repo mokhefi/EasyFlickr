@@ -8,7 +8,6 @@ import com.themasterspirit.flickr.data.db.models.SearchParams
 import com.themasterspirit.flickr.data.db.models.SearchParamsDao
 import com.themasterspirit.flickr.data.models.FlickrPhoto
 import com.themasterspirit.flickr.data.models.fromResponse
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -32,8 +31,7 @@ class FlickrRepository(
     }
 
 
-    fun observeSearchSuggestions(): Flowable<List<SearchParams>> = searchDao.observe()
-
+//    fun observeSearchSuggestions(): Flowable<List<SearchParams>> = searchDao.observe()
 //    fun searchSuggestions(text: String): Single<List<SearchParams>> = searchDao.search(text)
 
     fun searchSuggestions(text: String): Cursor = searchDao.searchCursor(text)

@@ -3,7 +3,6 @@ package com.themasterspirit.easyflickr.ui.search
 import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
@@ -13,10 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
 import com.themasterspirit.easyflickr.ui.photo.PhotoActivity
-import com.themasterspirit.easyflickr.utils.Failure
-import com.themasterspirit.easyflickr.utils.FlickrAndroidViewModelFactory
-import com.themasterspirit.easyflickr.utils.Loading
-import com.themasterspirit.easyflickr.utils.Success
+import com.themasterspirit.easyflickr.utils.*
 import com.themasterspirit.flickr.data.models.FlickrPhoto
 import kotlinx.android.synthetic.main.activity_search.*
 import org.kodein.di.Kodein
@@ -24,7 +20,6 @@ import org.kodein.di.KodeinContext
 import org.kodein.di.android.ActivityRetainedScope
 import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.*
-
 
 class SearchActivity : BaseActivity() {
 
@@ -93,11 +88,14 @@ class SearchActivity : BaseActivity() {
         search.queryHint = getString(R.string.search_query_hint_text)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                logger.log(TAG, "onQueryTextSubmit(); query = [$query]")
                 viewModel.search(query ?: initialSearchText)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                logger.log(TAG, "onQueryTextChange(); newText = [$newText]")
+//                search.autoCompleteTextView.setText(newText)
                 return if (newText?.isNotEmpty() == true) {
                     viewModel.updateSuggestions(newText)
                     true
@@ -106,21 +104,30 @@ class SearchActivity : BaseActivity() {
                 }
             }
         })
-        search.setOnCloseListener {
-            // todo: doesn't work
-            Log.d(TAG, "initSearchView(); ")
-            Toast.makeText(application, "OnCloseListener.OnClick();", Toast.LENGTH_SHORT).show()
-            viewModel.search(initialSearchText)
-            true
-        }
-        search.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-            override fun onSuggestionSelect(position: Int): Boolean {
-                Toast.makeText(application, "onSuggestionSelect(); position = [$position]", Toast.LENGTH_LONG).show()
-                return true
+//        search.setOnCloseListener {
+//            // todo: doesn't work
+//            Log.d(TAG, "initSearchView(); ")
+//            Toast.makeText(application, "OnCloseListener.OnClick();", Toast.LENGTH_SHORT).show()
+//            viewModel.search(initialSearchText)
+//            true
+//        }
+//        search.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+//            override fun onSuggestionSelect(position: Int): Boolean {
+//                Toast.makeText(application, "onSuggestionSelect(); position = [$position]", Toast.LENGTH_LONG).show()
+//                return false
+//            }
+//
+//            override fun onSuggestionClick(position: Int): Boolean {
+//                Toast.makeText(application, "onSuggestionClick(); position = [$position]", Toast.LENGTH_LONG).show()
+//                return false
+//            }
+//        })
+        search.autoCompleteTextView.threshold = 1
+        search.autoCompleteTextView.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && view is SearchView) {
+                view.autoCompleteTextView.showDropDown()
             }
-
-            override fun onSuggestionClick(position: Int): Boolean = false
-        })
+        }
     }
 
     private fun initObservers() {
@@ -151,7 +158,10 @@ class SearchActivity : BaseActivity() {
         })
 
         viewModel.searchSuggestions.observe(this, Observer { cursor: Cursor ->
-            searchView?.let { search -> search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor) }
+            searchView?.let { search ->
+                search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor)
+                logger.log(TAG, "suggestions updated, query = [${search.query}] count = [${cursor.count}]")
+            }
         })
     }
 

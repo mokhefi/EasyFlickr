@@ -31,10 +31,10 @@ interface SearchParamsDao {
     @Query("SELECT * FROM search_params ORDER BY date DESC")
     fun observe(): Flowable<List<SearchParams>>
 
-    @Query("SELECT * FROM search_params WHERE `query` LIKE '%' || :text || '%' ORDER BY date DESC")
+    @Query("SELECT * FROM search_params WHERE `query` LIKE :text || '%' ORDER BY date DESC")
     fun search(text: String): Single<List<SearchParams>>
 
-    @Query("SELECT * FROM search_params WHERE `query` LIKE '%' || :text || '%' ORDER BY date DESC")
+    @Query("SELECT * FROM search_params WHERE `query` LIKE :text || '%' ORDER BY date DESC")
     fun searchCursor(text: String): Cursor
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

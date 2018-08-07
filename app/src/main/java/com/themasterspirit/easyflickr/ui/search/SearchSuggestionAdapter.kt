@@ -1,6 +1,5 @@
 package com.themasterspirit.easyflickr.ui.search
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.view.View
@@ -20,7 +19,6 @@ class SearchSuggestionAdapter(
         return parent.inflate(R.layout.item_search_suggestion)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun bindView(view: View, context: Context, cursor: Cursor) {
         val text = cursor.getString(cursor.getColumnIndexOrThrow("query"))
         with(view) {
