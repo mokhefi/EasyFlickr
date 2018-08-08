@@ -53,10 +53,6 @@ class SearchActivity : BaseActivity() {
         setContentView(R.layout.activity_search)
 
         initObservers()
-    }
-
-    override fun onStart() {
-        super.onStart()
         initViews()
         if (adapter.items.isEmpty()) {
             viewModel.search(searchView?.query?.toString() ?: initialSearchText)
