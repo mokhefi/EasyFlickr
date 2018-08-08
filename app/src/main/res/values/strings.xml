@@ -8,4 +8,5 @@
     <string name="home_navigation_search">Search</string>
     <string name="message_no_data">No data</string>
     <string name="search_query_hint_text">Search Flickr…</string>
+    <string name="text_search_initial">nature</string>
 </resources>
