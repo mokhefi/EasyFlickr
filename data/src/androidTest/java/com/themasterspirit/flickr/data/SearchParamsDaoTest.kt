@@ -87,15 +87,20 @@ class SearchParamsDaoTest {
 
     @Test
     fun testSearch() {
-        dao.insert(*initialData.toTypedArray())
+        val items = listOf(
+                SearchParams("text1", Date()),          // 0
+                SearchParams("text2", Date()),          // 1
+                SearchParams("sample text 1", Date()),  // 2
+                SearchParams("sample text 2", Date()),  // 3
+                SearchParams("query 1", Date()),        // 4
+                SearchParams("query 2", Date()),        // 5
+                SearchParams("Hello World!", Date())    // 6
+        )
+        dao.insert(*items.sortedByDescending { it.date.time }.toTypedArray())
 
-        val searchQueryFirst: String = queryFirst.substring(0..1)
-        val searchQuerySecond: String = querySecond.substring(0..2)
-
-        val expectedResultFirst = initialData.filter { it.query.startsWith(searchQueryFirst) }
-        val expectedResultSecond = initialData.filter { it.query.startsWith(searchQuerySecond) }
-
-        dao.search(searchQueryFirst).test().assertValue(expectedResultFirst)
-        dao.search(searchQuerySecond).test().assertValue(expectedResultSecond)
+        dao.search("text").test().assertValue(items.subList(0, 2))
+        dao.search("t").test().assertValue(items.subList(0, 2))
+        dao.search("sample").test().assertValue(items.subList(2, 4))
+        dao.search("Hello World!").test().assertValue(listOf(items.last()))
     }
 }
