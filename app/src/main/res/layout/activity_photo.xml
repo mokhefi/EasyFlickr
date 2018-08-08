@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background_photo"
+        app:initScaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,15 +22,14 @@
         app:optimizeDisplay="true"
         tools:background="@color/magenta"
         tools:ignore="ContentDescription"
-        tools:scaleType="centerCrop" />
+        tools:scaleType="centerInside" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerTopControls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="@color/background_photo_navigation"
-        tools:layout_marginTop="24dp">
+        android:background="@color/background_photo_navigation">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -49,8 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/background_photo_navigation"
-        tools:layout_marginBottom="48dp">
+        android:background="@color/background_photo_navigation">
 
         <TextView
             android:id="@+id/tvViewCount"

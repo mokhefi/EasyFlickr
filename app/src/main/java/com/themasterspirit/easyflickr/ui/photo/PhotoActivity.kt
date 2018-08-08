@@ -5,8 +5,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.core.net.toUri
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import com.github.piasy.biv.view.BigImageView
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
 import com.themasterspirit.easyflickr.utils.navigationBarHeightPx
@@ -66,27 +67,20 @@ class PhotoActivity : BaseActivity() {
             if (containerTopControls.visibility == View.VISIBLE) hideUi() else showUi()
         }
 
-        ivPhoto.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE)
-
         val thumbnail = flickrPhoto.link(FlickrPhoto.Companion.Size.DEFAULT)
-        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.LARGE)
+        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.ORIGIN)
 
         ivPhoto.showImage(thumbnail.toUri(), origin.toUri())
     }
 
     private fun hideUi() {
         hideSystemUi()
-        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
-            it.visibility = View.GONE
-        }
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach { it.isGone = true }
     }
 
     private fun showUi() {
         showSystemUi()
-        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
-            it.visibility = View.VISIBLE
-        }
-
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach { it.isVisible = true }
     }
 
     /**

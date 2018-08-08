@@ -6,7 +6,6 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-
 class FlickrInterceptor(private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -18,18 +17,16 @@ class FlickrInterceptor(private val context: Context) : Interceptor {
                     .addQueryParameter("privacy_filter", "1") // public photos
                     .addQueryParameter("safe_search", "3") // 3 for restricted search
                     .addQueryParameter("media", "photos") // only photos (no videos)
-                    .addQueryParameter("sort", "relevance") // todo move
+                    .addQueryParameter("sort", "relevance")
                     .build()
             ).build()
         }
         return chain.proceed(request)
     }
-
-
+}
 //    companion object {
 //        const val FLICKR_API_KEY_NAME = "api_key"
 //        const val FLICKR_OUTPUT_FORMAT_NAME = "format"
 //        const val FLICKR_OUTPUT_FORMAT_JSON_NAME = "json"
 //        const val FLICKR_NO_JSON_CALLBACK_NAME = "nojsoncallback"
 //    }
-}
