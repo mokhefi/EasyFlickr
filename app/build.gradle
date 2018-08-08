@@ -96,4 +96,5 @@ dependencies {
 
     // Test helpers for LiveData
     testImplementation "android.arch.core:core-testing:$lifecycle_version"
+
 }
