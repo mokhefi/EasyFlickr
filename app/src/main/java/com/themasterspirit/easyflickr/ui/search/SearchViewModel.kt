@@ -50,7 +50,8 @@ class SearchViewModel(
                 .subscribe({ data: List<FlickrPhoto> ->
                     recentPhotos.value = Success(data)
                 }) { error ->
-                    recentPhotos.value = Failure(throwable = error)
+                    recentPhotos.value = Failure(throwable = error, error = error.message)
+                    error.printStackTrace()
                 })
     }
 

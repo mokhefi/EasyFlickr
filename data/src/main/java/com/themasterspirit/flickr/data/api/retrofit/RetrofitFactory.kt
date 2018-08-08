@@ -1,7 +1,7 @@
 package com.themasterspirit.flickr.data.api.retrofit
 
 import android.content.Context
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -19,7 +19,6 @@ object RetrofitFactory {
     const val RETROFIT_TIMEOUT: Int = 30
 
     inline fun <reified T> createService(
-            gson: Gson,
             debug: Boolean = false,
             context: Context? = null,
             endpoint: String = RetrofitFactory.endpoint,
@@ -38,6 +37,8 @@ object RetrofitFactory {
             builder.connectTimeout(RETROFIT_TIMEOUT.toLong(), TimeUnit.SECONDS)
             builder.build()
         }
+
+        val gson = GsonBuilder().create()
 
         return Retrofit.Builder()
                 .baseUrl(endpoint)
