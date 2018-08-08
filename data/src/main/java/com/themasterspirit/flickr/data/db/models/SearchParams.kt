@@ -37,6 +37,9 @@ interface SearchParamsDao {
     @Query("SELECT * FROM search_params WHERE `query` LIKE :text || '%' ORDER BY date DESC")
     fun searchCursor(text: String): Cursor
 
+    @Query("SELECT * FROM search_params ORDER BY date DESC")
+    fun getAllViaCursor(): Cursor
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg params: SearchParams)
 
@@ -44,5 +47,5 @@ interface SearchParamsDao {
     fun delete(vararg params: SearchParams)
 
     @Query("DELETE FROM search_params WHERE `query` = :query")
-    fun deleteByQuery(vararg query: String) : Int
+    fun deleteByQuery(vararg query: String): Int
 }

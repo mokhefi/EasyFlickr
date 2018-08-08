@@ -19,19 +19,12 @@ fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-//enum class LoadingMethod {
-//    ORIGINAL, REQUIRED, HARD, PROGRESSIVE
-//}
-
 fun ImageView.loadFlickrPhoto(
         photo: FlickrPhoto,
         expectedSize: FlickrPhoto.Companion.Size = FlickrPhoto.Companion.Size.DEFAULT
-//        ,
 //        placeholder: Drawable? = null
-//        ,
 //        callback: ((Bitmap?) -> Unit)? = null
 ) {
-//    val logger = context.application.logger
     val link: String = photo.link(expectedSize)
 //    logger.log("ImageView", "photo url = [$link]")
     Glide.with(this)

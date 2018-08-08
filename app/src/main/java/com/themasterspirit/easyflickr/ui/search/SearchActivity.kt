@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.themasterspirit.easyflickr.R
@@ -37,7 +37,6 @@ class SearchActivity : BaseActivity() {
     private val viewModel: SearchViewModel by instance()
 
     private val adapter by lazy { PhotoAdapter() }
-    private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(application, 2) }
 
     private val initialSearchText: String by lazy {
         getString(R.string.text_search_initial)
@@ -74,7 +73,7 @@ class SearchActivity : BaseActivity() {
             val query: String? = searchView?.query?.toString()
             viewModel.search(if (query?.isNotEmpty() == true) query else initialSearchText)
         }
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = GridLayoutManager(application, 2)
         recyclerView.adapter = adapter
 
         adapter.onItemClickListener = { photo: FlickrPhoto ->
@@ -87,26 +86,21 @@ class SearchActivity : BaseActivity() {
     private fun initSearchView(search: SearchView) {
         search.queryHint = getString(R.string.search_query_hint_text)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
                 logger.log(TAG, "onQueryTextSubmit(); query = [$query]")
-                val text: String = query ?: initialSearchText
+                val text: String = if (query.isEmpty()) initialSearchText else query
                 viewModel.search(text)
-                viewModel.updateSuggestions(text)
+                viewModel.updateSuggestions(query)
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 logger.log(TAG, "onQueryTextChange(); newText = [$newText]")
-//                search.autoCompleteTextView.setText(newText)
-                return if (newText?.isNotEmpty() == true) {
-                    viewModel.updateSuggestions(newText)
-                    true
-                } else {
-                    false
-                }
+                viewModel.updateSuggestions(newText)
+                return true
             }
         })
-        search.autoCompleteTextView.threshold = 1
+        search.autoCompleteTextView.threshold = 1 // can't be less than 1
 //        search.autoCompleteTextView.setOnFocusChangeListener { view, hasFocus ->
 //            if (hasFocus && view is SearchView) {
 //                view.autoCompleteTextView.showDropDown()
@@ -135,11 +129,12 @@ class SearchActivity : BaseActivity() {
                     adapter.notifyDataSetChanged()
 
                     tvEmptyView.text = getString(R.string.message_no_data)
-                    tvEmptyView.isGone = adapter.items.isEmpty()
+                    tvEmptyView.isVisible = adapter.items.isEmpty()
                     searchView?.clearFocus()
                 }
                 is Failure -> {
                     val error = data.error ?: getString(R.string.message_default_error)
+                    tvEmptyView.isVisible = adapter.items.isEmpty()
                     if (adapter.items.isEmpty()) {
                         tvEmptyView.text = error
                     } else {
@@ -151,6 +146,7 @@ class SearchActivity : BaseActivity() {
 
         viewModel.searchSuggestions.observe(this, Observer { cursor: Cursor ->
             searchView?.let { search ->
+                logger.log(TAG, "suggestions updated, query = [${search.query}] count = [${cursor.count}], cursor = [${cursor.hashCode()}]")
                 if (search.suggestionsAdapter is SearchSuggestionAdapter) {
                     search.suggestionsAdapter.swapCursor(cursor)
                 } else {
@@ -158,7 +154,6 @@ class SearchActivity : BaseActivity() {
                         onRemoveClickListener = { query: String -> viewModel.deleteSuggestion(query) }
                     }
                 }
-                logger.log(TAG, "suggestions updated, query = [${search.query}] count = [${cursor.count}]")
             }
         })
 

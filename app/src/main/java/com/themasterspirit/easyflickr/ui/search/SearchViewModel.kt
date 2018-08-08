@@ -57,7 +57,13 @@ class SearchViewModel(
     fun updateSuggestions(text: String = "") {
         disposables.add(Single.just(text)
                 .subscribeOn(Schedulers.computation())
-                .map { repository.searchSuggestions(it) }
+                .map { query: String ->
+                    if (query.isEmpty()) {
+                        repository.getAll()
+                    } else {
+                        repository.searchSuggestions(query)
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ cursor: Cursor ->
                     searchSuggestions.value = cursor
