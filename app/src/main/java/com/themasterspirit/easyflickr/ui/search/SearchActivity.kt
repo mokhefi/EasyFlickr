@@ -52,10 +52,20 @@ class SearchActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        initViews()
         initObservers()
+    }
 
-        if (adapter.items.isEmpty()) viewModel.search(initialSearchText)
+    override fun onStart() {
+        super.onStart()
+        initViews()
+        if (adapter.items.isEmpty()) {
+            viewModel.search(searchView?.query?.toString() ?: initialSearchText)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        swipeRefreshLayout.isRefreshing = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,6 +95,8 @@ class SearchActivity : BaseActivity() {
 
     private fun initSearchView(search: SearchView) {
         search.queryHint = getString(R.string.search_query_hint_text)
+        search.autoCompleteTextView.threshold = 1 // can't be less than 1
+
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 logger.log(TAG, "onQueryTextSubmit(); query = [$query]")
@@ -100,30 +112,12 @@ class SearchActivity : BaseActivity() {
                 return true
             }
         })
-        search.autoCompleteTextView.threshold = 1 // can't be less than 😥
-
-//        todo: doesn't work
-        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            logger.log(TAG, "initSearchView(); hasFocus = [$hasFocus]")
-            if (hasFocus) {
-                viewModel.updateSuggestions(search.query.toString())
-            }
-        }
     }
 
     private fun initObservers() {
         viewModel.recentPhotos.observe(this, Observer { data ->
             when (data) {
-                is Loading -> {
-                    if (data.loading) {
-                        if (adapter.items.isEmpty()) {
-                        } else {
-                            swipeRefreshLayout.isRefreshing = true
-                        }
-                    } else {
-                        swipeRefreshLayout.isRefreshing = false
-                    }
-                }
+                is Loading -> swipeRefreshLayout.isRefreshing = data.loading
                 is Success -> {
                     adapter.items.clear()
                     adapter.items.addAll(data.result)
@@ -155,13 +149,6 @@ class SearchActivity : BaseActivity() {
                 } else {
                     search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor).apply {
                         onRemoveClickListener = { query: String -> viewModel.deleteSuggestion(query) }
-                    }
-                }
-
-//                todo: doesn't work
-                with(search.autoCompleteTextView) {
-                    if (hasFocus() && !this.isPopupShowing && text.isNullOrEmpty()) {
-                        showDropDown()
                     }
                 }
             }

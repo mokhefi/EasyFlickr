@@ -25,13 +25,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-//        private val kodein: Kodein by closestKodein(view.context)
-//        private val logger: FlickrLogger by kodein.instance()
-
         fun bind() {
             val photo: FlickrPhoto = items[adapterPosition]
-//            val thumbnail = photo.link(FlickrPhoto.Companion.Size.THUMBNAIL)
-//            val url = photo.link(FlickrPhoto.Companion.Size.DEFAULT)
 
             with(itemView) {
                 ivPhoto.loadFlickrPhoto(photo, expectedSize = FlickrPhoto.Companion.Size.DEFAULT)
