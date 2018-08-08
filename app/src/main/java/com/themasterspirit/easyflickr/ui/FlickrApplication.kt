@@ -40,7 +40,11 @@ class FlickrApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
-        logger.log("app", "onCreate()")
+        logger.log(TAG, "onCreate()")
         BigImageViewer.initialize(GlideImageLoader.with(application))
+    }
+
+    companion object {
+        const val TAG = "FlickrApplication"
     }
 }

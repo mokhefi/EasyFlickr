@@ -103,11 +103,12 @@ class SearchActivity : BaseActivity() {
         search.autoCompleteTextView.threshold = 1 // can't be less than 😥
 
 //        todo: doesn't work
-//        search.setOnQueryTextFocusChangeListener { view, hasFocus ->
-//            if (hasFocus && view is AutoCompleteTextView) {
-//                view.showDropDown()
-//            }
-//        }
+        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            logger.log(TAG, "initSearchView(); hasFocus = [$hasFocus]")
+            if (hasFocus) {
+                viewModel.updateSuggestions(search.query.toString())
+            }
+        }
     }
 
     private fun initObservers() {
@@ -127,6 +128,8 @@ class SearchActivity : BaseActivity() {
                     adapter.items.clear()
                     adapter.items.addAll(data.result)
                     adapter.notifyDataSetChanged()
+
+                    recyclerView.scrollToPosition(0)
 
                     tvEmptyView.text = getString(R.string.message_no_data)
                     tvEmptyView.isVisible = adapter.items.isEmpty()
@@ -152,6 +155,13 @@ class SearchActivity : BaseActivity() {
                 } else {
                     search.suggestionsAdapter = SearchSuggestionAdapter(search, cursor).apply {
                         onRemoveClickListener = { query: String -> viewModel.deleteSuggestion(query) }
+                    }
+                }
+
+//                todo: doesn't work
+                with(search.autoCompleteTextView) {
+                    if (hasFocus() && !this.isPopupShowing && text.isNullOrEmpty()) {
+                        showDropDown()
                     }
                 }
             }
