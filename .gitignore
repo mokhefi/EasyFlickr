@@ -35,3 +35,7 @@ captures/
 # Ohter
 .DS_Store
 *.iml
+
+# Secret variables
+keystore.properties
+data/src/main/res/values/secret_values.xml
