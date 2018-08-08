@@ -21,7 +21,7 @@
         tools:targetApi="28">
 
         <activity
-            android:name="com.themasterspirit.easyflickr.ui.home.HomeActivity"
+            android:name="com.themasterspirit.easyflickr.ui.search.SearchActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,9 +31,8 @@
         </activity>
 
         <activity
-            android:theme="@style/PhotoActivityTheme"
             android:name=".ui.photo.PhotoActivity"
-            />
+            android:theme="@style/PhotoActivityTheme" />
     </application>
 
 </manifest>

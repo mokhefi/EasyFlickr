@@ -1,0 +1,4 @@
+<resources>
+
+    <string name="api_output_format" translatable="false">json</string>
+</resources>

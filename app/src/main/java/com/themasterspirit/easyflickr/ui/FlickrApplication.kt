@@ -9,14 +9,12 @@ import com.themasterspirit.easyflickr.di.flickrDataModule
 import com.themasterspirit.easyflickr.di.utilModule
 import com.themasterspirit.easyflickr.utils.FlickrLogger
 import com.themasterspirit.easyflickr.utils.application
+import com.themasterspirit.flickr.data.db.FlickrDatabase
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.KodeinContext
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.kcontext
-import org.kodein.di.generic.provider
+import org.kodein.di.generic.*
 
 class FlickrApplication : Application(), KodeinAware {
 
@@ -26,6 +24,11 @@ class FlickrApplication : Application(), KodeinAware {
         val application: FlickrApplication = this@FlickrApplication
 
         bind<Context>() with provider { application as Context }
+
+        bind<FlickrDatabase>() with singleton {
+//            Room.databaseBuilder(application, FlickrDatabase::class.java, "flickr.db").build()
+            FlickrDatabase.create(application)
+        }
 
         import(androidXModule(application))
         import(utilModule)

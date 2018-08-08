@@ -15,6 +15,10 @@ class FlickrInterceptor(private val context: Context) : Interceptor {
                     .addQueryParameter("api_key", context.getString(R.string.api_key))
                     .addQueryParameter("format", context.getString(R.string.api_output_format))
                     .addQueryParameter("nojsoncallback", "1") // pretty json output
+                    .addQueryParameter("privacy_filter", "1") // public photos
+                    .addQueryParameter("safe_search", "3") // 3 for restricted search
+                    .addQueryParameter("media", "photos") // only photos (no videos)
+                    .addQueryParameter("sort", "relevance") // todo move
                     .build()
             ).build()
         }

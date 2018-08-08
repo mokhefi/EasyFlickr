@@ -25,13 +25,12 @@ val apiModule = Kodein.Module(name = "api") {
                 gson = instance(),
                 context = instance(),
                 debug = BuildConfig.DEBUG,
-                interceptors = *arrayOf(FlickrInterceptor(context = instance()))
-        )
+                interceptors = *arrayOf(FlickrInterceptor(context = instance())))
     }
 }
 
 val flickrDataModule: Kodein.Module = Kodein.Module(name = "flickr_data") {
     bind<FlickrRepository>() with provider {
-        FlickrRepository(service = instance())
+        FlickrRepository(service = instance(), database = instance())
     }
 }

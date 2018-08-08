@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: "org.jetbrains.kotlin.android.extensions"
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -11,8 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -33,7 +33,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // androidx
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation "androidx.appcompat:appcompat:$android_x_version"
 
     // network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -55,15 +55,22 @@ dependencies {
     }
 
     // rx
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
-    // android support
-//    implementation "com.android.support:appcompat-v7:$support_version"
-//    implementation "com.android.support:design:$support_version"
+    // room database
+    //noinspection GradleDependency
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    //noinspection GradleDependency
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     // tests
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'junit:junit:4.12'
+
+    // room database
+    testImplementation "androidx.room:room-testing:$room_version"
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+
 }

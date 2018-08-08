@@ -1,12 +1,16 @@
 package com.themasterspirit.easyflickr.ui.photo
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
+import androidx.core.net.toUri
+import androidx.core.view.updatePadding
 import com.github.piasy.biv.view.BigImageView
 import com.themasterspirit.easyflickr.R
 import com.themasterspirit.easyflickr.ui.BaseActivity
+import com.themasterspirit.easyflickr.utils.navigationBarHeightPx
+import com.themasterspirit.easyflickr.utils.statusBarHeightPx
 import com.themasterspirit.flickr.data.models.FlickrPhoto
 import kotlinx.android.synthetic.main.activity_photo.*
 import java.text.DateFormat
@@ -46,34 +50,42 @@ class PhotoActivity : BaseActivity() {
             actionBar.setDisplayHomeAsUpEnabled(true)
         }
 
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        containerTopControls.updatePadding(top = statusBarHeightPx)
+        containerBottomControls.updatePadding(bottom = navigationBarHeightPx)
+
         tvTitle.text = flickrPhoto.title
-        tvDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(flickrPhoto.dateUpload)
-        title = flickrPhoto.ownerName
+        tvDateUpload.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(flickrPhoto.dateUpload)
+        tvOwnerName.text = flickrPhoto.ownerName
+        tvViewCount.text = flickrPhoto.formattedViewCount
+
+        title = ""
 
         ivPhoto.setOnClickListener {
-            if (tvTitle.visibility == View.VISIBLE) hideUi() else showUi()
+            if (containerTopControls.visibility == View.VISIBLE) hideUi() else showUi()
         }
 
         ivPhoto.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE)
 
         val thumbnail = flickrPhoto.link(FlickrPhoto.Companion.Size.DEFAULT)
-        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.ORIGIN)
+        val origin = flickrPhoto.link(FlickrPhoto.Companion.Size.LARGE)
 
-        ivPhoto.showImage(Uri.parse(thumbnail), Uri.parse(origin))
+        ivPhoto.showImage(thumbnail.toUri(), origin.toUri())
     }
 
     private fun hideUi() {
         hideSystemUi()
-        tvTitle.visibility = View.GONE
-        tvDate.visibility = View.GONE
-        toolbar.visibility = View.GONE
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
+            it.visibility = View.GONE
+        }
     }
 
     private fun showUi() {
         showSystemUi()
-        tvTitle.visibility = View.VISIBLE
-        tvDate.visibility = View.VISIBLE
-        toolbar.visibility = View.VISIBLE
+        listOf(toolbar, containerTopControls, containerBottomControls).forEach {
+            it.visibility = View.VISIBLE
+        }
 
     }
 
@@ -85,13 +97,8 @@ class PhotoActivity : BaseActivity() {
     private fun hideSystemUi() {
         val decorView = window.decorView
         decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
@@ -102,8 +109,10 @@ class PhotoActivity : BaseActivity() {
      */
     private fun showSystemUi() {
         val decorView = window.decorView
-        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    }
+
+    companion object {
+        const val TAG = "PhotoActivity"
     }
 }
