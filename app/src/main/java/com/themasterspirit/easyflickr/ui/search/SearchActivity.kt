@@ -100,12 +100,12 @@ class SearchActivity : BaseActivity() {
                 return true
             }
         })
-        search.autoCompleteTextView.threshold = 1 // can't be less than 1
-//        search.autoCompleteTextView.setOnFocusChangeListener { view, hasFocus ->
-//            if (hasFocus && view is SearchView) {
-//                view.autoCompleteTextView.showDropDown()
-//            } else {
-////                search.autoCompleteTextView.setText("")
+        search.autoCompleteTextView.threshold = 1 // can't be less than 😥
+
+//        todo: doesn't work
+//        search.setOnQueryTextFocusChangeListener { view, hasFocus ->
+//            if (hasFocus && view is AutoCompleteTextView) {
+//                view.showDropDown()
 //            }
 //        }
     }

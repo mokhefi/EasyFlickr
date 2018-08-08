@@ -44,20 +44,18 @@ class SearchSuggestionAdapter(
         }
     }
 
-    override fun changeCursor(newCursor: Cursor) {
-        logger.log(TAG, "changeCursor(); new[${newCursor.hashCode()}]")
+    override fun changeCursor(newCursor: Cursor?) {
+        logger.log(TAG, "changeCursor(); new[${newCursor?.hashCode()}]")
     }
 
-    override fun swapCursor(newCursor: Cursor): Cursor {
-        availableCursorCodes.add(newCursor.hashCode())
-        logger.log(TAG, "swapCursor(); newCursor.hashCode() = [${newCursor.hashCode()}]")
-        return newCursor.let { cursor: Cursor ->
-            return@let if (availableCursorCodes.contains(cursor.hashCode())) {
-                super.swapCursor(cursor)?.also { oldCursor ->
-                    availableCursorCodes.remove(oldCursor.hashCode())
-                    logger.log(TAG, "oldCursor.hashCode() = [${oldCursor.hashCode()}]")
-                }
-            } else null
+    override fun swapCursor(newCursor: Cursor?): Cursor {
+        logger.log(TAG, "swapCursor(); newCursor.hashCode() = [${newCursor?.hashCode()}]")
+        return newCursor?.let {
+            availableCursorCodes.add(newCursor.hashCode())
+            return@let super.swapCursor(newCursor)?.also { oldCursor ->
+                availableCursorCodes.remove(oldCursor.hashCode())
+                logger.log(TAG, "oldCursor.hashCode() = [${oldCursor.hashCode()}]")
+            }
         } ?: cursor
     }
 

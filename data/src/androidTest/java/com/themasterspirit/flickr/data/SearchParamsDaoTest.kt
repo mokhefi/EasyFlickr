@@ -96,11 +96,11 @@ class SearchParamsDaoTest {
                 SearchParams("query 2", Date()),        // 5
                 SearchParams("Hello World!", Date())    // 6
         )
-        dao.insert(*items.sortedByDescending { it.date.time }.toTypedArray())
+        dao.insert(*items.toTypedArray())
 
-        dao.search("text").test().assertValue(items.subList(0, 2))
-        dao.search("t").test().assertValue(items.subList(0, 2))
-        dao.search("sample").test().assertValue(items.subList(2, 4))
+        dao.search("text").test().assertValue(items.subList(0, 2).sortedByDescending { it.date.time })
+        dao.search("t").test().assertValue(items.subList(0, 2).sortedByDescending { it.date.time })
+        dao.search("sample").test().assertValue(items.subList(2, 4).sortedByDescending { it.date.time })
         dao.search("Hello World!").test().assertValue(listOf(items.last()))
     }
 }
