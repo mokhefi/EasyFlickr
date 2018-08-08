@@ -38,9 +38,9 @@ class FlickrRepository(
         return Single.just(text).map { query: Array<out String> -> searchDao.deleteByQuery(*query) }
     }
 
-    fun saveSearchQuerySilent(text: String): Disposable? {
+    fun saveSearchQuerySilent(text: String, date: Date = Date()): Disposable? {
         return if (text.isNotEmpty()) {
-            Single.just(SearchParams(query = text, date = Date()))
+            Single.just(SearchParams(query = text, date = date))
                     .subscribeOn(Schedulers.computation())
                     .map { params: SearchParams -> searchDao.insert(params) }
                     .observeOn(AndroidSchedulers.mainThread())

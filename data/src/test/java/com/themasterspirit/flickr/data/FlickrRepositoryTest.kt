@@ -1,8 +1,6 @@
 package com.themasterspirit.flickr.data
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.themasterspirit.flickr.data.TestData.photos
 import com.themasterspirit.flickr.data.TestData.response
 import com.themasterspirit.flickr.data.api.repositories.FlickrRepository
@@ -11,23 +9,36 @@ import com.themasterspirit.flickr.data.api.responses.FlickrPhotoListResponseWrap
 import com.themasterspirit.flickr.data.api.responses.FlickrPhotoResponse
 import com.themasterspirit.flickr.data.api.retrofit.FlickrService
 import com.themasterspirit.flickr.data.db.FlickrDatabase
+import com.themasterspirit.flickr.data.db.models.SearchParams
+import com.themasterspirit.flickr.data.db.models.SearchParamsDao
 import com.themasterspirit.flickr.data.models.FlickrPhoto
 import com.themasterspirit.flickr.data.models.fromResponse
+import com.themasterspirit.flickr.data.utils.RxSchedulersOverrideRule
 import io.reactivex.Single
-import org.junit.Assert.assertNotEquals
+import io.reactivex.disposables.Disposable
+import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
+import java.util.*
 
 class FlickrRepositoryTest {
 
+    @Rule
+    @JvmField
+    val testSchedulerRule: TestRule = RxSchedulersOverrideRule()
+
     private val service: FlickrService = mock()
     private val database: FlickrDatabase = mock()
+    private val searchParamsDao: SearchParamsDao = mock()
 
     private lateinit var repository: FlickrRepository
 
     @Before
     fun setup() {
         repository = FlickrRepository(service, database)
+        whenever(database.searchParamsDao()).doReturn(searchParamsDao)
     }
 
     @Test
@@ -36,7 +47,7 @@ class FlickrRepositoryTest {
     }
 
     @Test
-    fun searchTest_Success() {
+    fun test_search_Success() {
         val query = ""
 
         whenever(service.search(query)).doReturn(Single.just(response))
@@ -47,13 +58,32 @@ class FlickrRepositoryTest {
     }
 
     @Test
-    fun searchTest_Failure() {
+    fun test_search_Failure() {
         val query = ""
         val throwable = RuntimeException("error1")
 
         whenever(service.search(query)).doReturn(Single.error(throwable))
 
         repository.search().test().assertNotComplete().assertError(throwable)
+    }
+
+    @Test
+    fun test_saveSearchQuerySilent_Empty() {
+        val result: Disposable? = repository.saveSearchQuerySilent("")
+
+        assertNull(result)
+        verify(database.searchParamsDao(), never()).insert(any())
+    }
+
+    @Test
+    fun test_saveSearchQuerySilent_NotEmpty() {
+        val query = "not_empty"
+        val date = Date()
+
+        val result: Disposable? = repository.saveSearchQuerySilent(query, date)
+
+        assertNotNull(result)
+        verify(database.searchParamsDao(), times(1)).insert(SearchParams(query, date))
     }
 }
 
@@ -103,5 +133,4 @@ object TestData {
                     originalFormat = null
             )
     )
-
 }
