@@ -129,6 +129,8 @@ class SearchActivity : BaseActivity() {
                     adapter.items.addAll(data.result)
                     adapter.notifyDataSetChanged()
 
+                    recyclerView.scrollToPosition(0)
+
                     tvEmptyView.text = getString(R.string.message_no_data)
                     tvEmptyView.isVisible = adapter.items.isEmpty()
                     searchView?.clearFocus()

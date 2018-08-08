@@ -1,6 +1,5 @@
 package com.themasterspirit.flickr.data.api.repositories
 
-import android.annotation.SuppressLint
 import android.database.Cursor
 import com.themasterspirit.flickr.data.api.retrofit.FlickrService
 import com.themasterspirit.flickr.data.db.FlickrDatabase
@@ -10,6 +9,7 @@ import com.themasterspirit.flickr.data.models.FlickrPhoto
 import com.themasterspirit.flickr.data.models.fromResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -22,14 +22,10 @@ class FlickrRepository(
         get() = database.searchParamsDao()
 
     fun search(text: String = ""): Single<List<FlickrPhoto>> {
-        return service.search(text = text)
-                .map { response ->
-                    response.photos.photo
-                            .map { it.fromResponse() }
-//                            .filter { it.originalFormat != null }
-                }
+        return service.search(text = text).map { response ->
+            response.photos.photo.map { it.fromResponse() }
+        }
     }
-
 
 //    fun observeSearchSuggestions(): Flowable<List<SearchParams>> = searchDao.observe()
 //    fun searchSuggestions(text: String): Single<List<SearchParams>> = searchDao.search(text)
@@ -42,14 +38,13 @@ class FlickrRepository(
         return Single.just(text).map { query: Array<out String> -> searchDao.deleteByQuery(*query) }
     }
 
-    @SuppressLint("CheckResult")
-    fun saveSearchQuerySilent(text: String) {
-        if (text.isNotEmpty()) {
+    fun saveSearchQuerySilent(text: String): Disposable? {
+        return if (text.isNotEmpty()) {
             Single.just(SearchParams(query = text, date = Date()))
                     .subscribeOn(Schedulers.computation())
                     .map { params: SearchParams -> searchDao.insert(params) }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({}) { error -> error.printStackTrace() }
-        }
+        } else null
     }
 }

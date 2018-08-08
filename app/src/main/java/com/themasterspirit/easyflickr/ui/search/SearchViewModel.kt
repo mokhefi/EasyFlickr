@@ -43,9 +43,9 @@ class SearchViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { recentPhotos.value = Loading(false) }
-                .doOnSuccess {
+                .doOnSuccess { _: List<FlickrPhoto> ->
                     recentPhotos.value = Loading(false)
-                    repository.saveSearchQuerySilent(text)
+                    repository.saveSearchQuerySilent(text)?.let { disposables.add(it) }
                 }
                 .subscribe({ data: List<FlickrPhoto> ->
                     recentPhotos.value = Success(data)

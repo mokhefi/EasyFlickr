@@ -21,10 +21,6 @@ abstract class BaseActivity : AppCompatActivity(), KodeinAware {
 
     protected val logger: FlickrLogger by instance()
 
-//    protected val inflater: LayoutInflater by instance {
-//        LayoutInflater.from(this@BaseActivity)
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val message = "onCreate(); hash = [${hashCode()}], savedInstanceState = [$savedInstanceState]"

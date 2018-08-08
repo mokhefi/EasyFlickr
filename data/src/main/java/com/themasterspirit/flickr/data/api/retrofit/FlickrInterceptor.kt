@@ -26,10 +26,10 @@ class FlickrInterceptor(private val context: Context) : Interceptor {
     }
 
 
-    companion object {
-        const val FLICKR_API_KEY_NAME = "api_key"
-        const val FLICKR_OUTPUT_FORMAT_NAME = "format"
-        const val FLICKR_OUTPUT_FORMAT_JSON_NAME = "json"
-        const val FLICKR_NO_JSON_CALLBACK_NAME = "nojsoncallback"
-    }
+//    companion object {
+//        const val FLICKR_API_KEY_NAME = "api_key"
+//        const val FLICKR_OUTPUT_FORMAT_NAME = "format"
+//        const val FLICKR_OUTPUT_FORMAT_JSON_NAME = "json"
+//        const val FLICKR_NO_JSON_CALLBACK_NAME = "nojsoncallback"
+//    }
 }

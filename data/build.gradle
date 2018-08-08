@@ -67,6 +67,8 @@ dependencies {
 
     // tests
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.19.0" //  (*)
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1"
 
     // room database
     testImplementation "androidx.room:room-testing:$room_version"
